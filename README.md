@@ -62,7 +62,7 @@ res = cv.FastStepGraph(X,
 G = FastStepGraph(X, res$alpha_f_opt , res$alpha_b_opt, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
 ```
-However, this is not an exhaustive grid search. This is a heuristic that always sets $\mathbf{\alpha_b}$ = 0.5 $\mathbf{\alpha_f}$
+However, this is not an exhaustive grid search. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$.
 
 To increase performace you can execute the same cross-validation in parallel, but the **doParallel** dependency must be installed:
 
