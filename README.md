@@ -29,12 +29,8 @@ Afterwards, fit the Omega matrix by calling the Fast Step Graph function, like:
 ```{r}
 source('FastStepGraph.R')
 
-alpha_f = 0.22
-alpha_b = 0.10
-nei.max = 5
-
 t0 <- Sys.time() # INITIAL TIME
-G = FastStepGraph(X, alpha_f = alpha_f, alpha_b = alpha_b, nei.max=nei.max)
+G = FastStepGraph(X, alpha_f = 0.22, alpha_b = 0.10, nei.max=5)
 difftime(Sys.time(), t0, units = "secs")
 
 print(G$Omega)
@@ -45,18 +41,12 @@ To find the optimal $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ parameters for t
 ```{r}
 source('cv.FastStepGraph.R')
 
-alpha_f_min = 0.01
-alpha_f_max = 0.7
-n_alpha = 20 # size of the grid search
-alpha_b_min = alpha_f_min
-alpha_b_max = alpha_f_max
-
 t0 <- Sys.time() # INITIAL TIME
 res = cv.FastStepGraph(X, 
                        n_folds = 5, 
-                       alpha_f_min = alpha_f_min, 
-                       alpha_f_max = alpha_f_max,
-                       n_alpha = n_alpha, 
+                       alpha_f_min = 0.01, 
+                       alpha_f_max = 0.70,
+                       n_alpha = 20, # size of the grid search
                        nei.max = 5)
 difftime(Sys.time(), t0, units = "secs")
 
@@ -76,18 +66,12 @@ The **doParallel** package will require the following dependencies: **foreach**,
 ```{r}
 source('cv.FastStepGraph.R')
 
-alpha_f_min = 0.01
-alpha_f_max = 0.7
-n_alpha = 20 # size of the grid search
-alpha_b_min = alpha_f_min
-alpha_b_max = alpha_f_max
-
 t0 <- Sys.time() # INITIAL TIME
 res = cv.FastStepGraph(X, 
                        n_folds = 5, 
-                       alpha_f_min = alpha_f_min, 
-                       alpha_f_max = alpha_f_max,
-                       n_alpha = n_alpha, 
+                       alpha_f_min = 0.01, 
+                       alpha_f_max = 0.70,
+                       n_alpha = 20, # size of the grid search
                        nei.max = 5,
                        parallel = TRUE)
 difftime(Sys.time(), t0, units = "secs")
