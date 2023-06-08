@@ -40,7 +40,7 @@ difftime(Sys.time(), t0, units = "secs")
 # G$Omega
 ```
 
-To find the optimal $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ parameters for the previously generated **X** data, we can perform a cross-validation on a grid of combinations as follows:
+To find the optimal $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ parameters for the previously generated **X** data, we can perform a cross-validation on a combination grid as follows:
 
 ```{r}
 source('cv.FastStepGraph.R')
@@ -62,6 +62,7 @@ res = cv.FastStepGraph(X,
 G = FastStepGraph(X, res$alpha_f_opt , res$alpha_b_opt, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
 ```
+However, this is not an exhaustive grid search. This is a heuristic that always sets $\mathbf{\alpha_b}$ = 0.5 $\mathbf{\alpha_f}$
 
 To increase performace you can execute the same cross-validation in parallel, but the **doParallel** dependency must be installed:
 
