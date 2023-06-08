@@ -5,10 +5,7 @@ Example of use in RStudio
 
 ```{r}
 setwd(getwd())
-rm(list=ls()) # Clear memory
-
 library(MASS)     # mvrnorm
-
 source('cv.FastStepGraph.R')
 source('FastStepGraph.R')
 source('SigmaAR.R')
