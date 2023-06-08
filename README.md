@@ -13,7 +13,7 @@ source('SigmaAR.R')
 # Simulate Gaussian Data with Autoregressive (AR) Model
 set.seed(1234567)
 phi = 0.4 
-p = 100  # Dimension
+p = 200  # Dimension
 n = 100 # Sample size
 
 Sigma = SigmaAR(p, phi)
