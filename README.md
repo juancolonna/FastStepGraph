@@ -52,8 +52,7 @@ res = cv.FastStepGraph(X,
                        alpha_f_min = alpha_f_min, 
                        alpha_f_max = alpha_f_max,
                        n_alpha = n_alpha, 
-                       nei.max = 5,
-                       parallel = TRUE)
+                       nei.max = 5)
 
 G = FastStepGraph(X, res$alpha_f_opt , res$alpha_b_opt, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
