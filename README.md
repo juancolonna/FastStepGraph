@@ -1,7 +1,7 @@
 # FastStepGraph
 FastStepGraph
 
-Example of use using notebook cell in RStudio
+Example of use in RStudio
 
 ```{r}
 setwd(getwd())
