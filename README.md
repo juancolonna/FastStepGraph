@@ -38,6 +38,8 @@ difftime(Sys.time(), t0, units = "secs")
 To find the optimal alpha_f and alpha_b parameters for the previously generated X data, we can perform a cross-validation on a grid of combinations as follows:
 
 ```{r}
+source('cv.FastStepGraph.R')
+
 alpha_f_min = 0.01
 alpha_f_max = 0.7
 n_alpha = 20 # size of the grid search
@@ -66,6 +68,8 @@ install.packages("doParallel")
 Then call the method setting the parameter "parallel = TRUE", as follows:
 
 ```{r}
+source('cv.FastStepGraph.R')
+
 alpha_f_min = 0.01
 alpha_f_max = 0.7
 n_alpha = 20 # size of the grid search
