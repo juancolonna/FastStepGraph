@@ -41,7 +41,9 @@ To find the optimal parameters alpha_f and alpha_b we can perform a cross-valida
 
 
 To perform cross-validation in parallel, the "foreach" dependency must be installed
-install.packages("foreach")
+```{r}
+install.packages("doParallel")
+```
 
 
 
