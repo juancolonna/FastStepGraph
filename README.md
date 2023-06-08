@@ -1,4 +1,4 @@
-# FastStepGraph
+# Fast Step Graph
 
 Example of use in RStudio. 
 
