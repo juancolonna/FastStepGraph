@@ -6,7 +6,7 @@ Example of use in RStudio
 ```{r}
 setwd(getwd())
 library(MASS)     # mvrnorm
-source('cv.FastStepGraph.R')
+
 source('FastStepGraph.R')
 source('SigmaAR.R')
 
@@ -35,6 +35,10 @@ difftime(Sys.time(), t0, units = "secs")
 
 # G$Omega
 ```
+
+To find the optimal parameters alpha_f and alpha_b we can perform a cross-validation on a grid of combinations as follows:
+
+
 
 To perform cross-validation in parallel, the "foreach" dependency must be installed
 install.packages("foreach")
