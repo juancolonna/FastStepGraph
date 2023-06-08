@@ -64,7 +64,7 @@ To perform the same cross-validation in parallel, the "doParallel" dependency mu
 install.packages("doParallel")
 ```
 
-Then call the method setting the parameter "parallel = TRUE", as follows:
+The "doParallel" package will require the following dependencies: foreach, iterators and parallel. Make sure you satisfy them. Then call the method setting the parameter "parallel = TRUE", as follows:
 
 ```{r}
 source('cv.FastStepGraph.R')
