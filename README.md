@@ -35,7 +35,7 @@ difftime(Sys.time(), t0, units = "secs")
 
 # G$Omega
 ```
-To find the optimal $alpha_f$ and $alpha_b$ parameters for the previously generated X data, we can perform a cross-validation on a grid of combinations as follows:
+To find the optimal $\bold{\alpha_f}$ and $\bold{\alpha_b}$ parameters for the previously generated $\bold{X}$ data, we can perform a cross-validation on a grid of combinations as follows:
 
 ```{r}
 source('cv.FastStepGraph.R')
