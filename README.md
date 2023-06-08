@@ -37,7 +37,7 @@ t0 <- Sys.time() # INITIAL TIME
 G = FastStepGraph(X, alpha_f = alpha_f, alpha_b = alpha_b, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
 
-# G$Omega
+print(G$Omega)
 ```
 
 To find the optimal $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ parameters for the previously generated **X** data, we can perform a cross-validation on a combination grid as follows:
@@ -58,9 +58,10 @@ res = cv.FastStepGraph(X,
                        alpha_f_max = alpha_f_max,
                        n_alpha = n_alpha, 
                        nei.max = 5)
-
-G = FastStepGraph(X, res$alpha_f_opt , res$alpha_b_opt, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
+
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
 ```
 However, this is not an exhaustive grid search. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$.
 
@@ -89,7 +90,8 @@ res = cv.FastStepGraph(X,
                        n_alpha = n_alpha, 
                        nei.max = 5,
                        parallel = TRUE)
-
-G = FastStepGraph(X, res$alpha_f_opt , res$alpha_b_opt, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
+
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
 ```
