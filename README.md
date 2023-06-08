@@ -36,4 +36,9 @@ difftime(Sys.time(), t0, units = "secs")
 # G$Omega
 ```
 
+To perform cross-validation in parallel, the "foreach" dependency must be installed
+install.packages("foreach")
+
+
+
 
