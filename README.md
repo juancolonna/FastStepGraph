@@ -36,8 +36,6 @@ t0 <- Sys.time() # INITIAL TIME
 G = FastStepGraph(X, alpha_f = alpha_f, alpha_b = alpha_b, nei.max=nei.max)
 difftime(Sys.time(), t0, units = "secs")
 
-all.equal(G$Omega, Omega, tolerance = 1e-3)
-
 # G$Omega
 ```
 
