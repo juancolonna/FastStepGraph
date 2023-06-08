@@ -64,8 +64,6 @@ install.packages("doParallel")
 The **doParallel** package will require the following dependencies: **foreach**, **iterators** and **parallel**. Make sure you satisfy them. Then call the method setting the parameter **parallel = TRUE**, as follows:
 
 ```{r}
-source('cv.FastStepGraph.R')
-
 t0 <- Sys.time() # INITIAL TIME
 res = cv.FastStepGraph(X, 
                        n_folds = 5, 
