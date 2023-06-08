@@ -4,7 +4,7 @@
 #' @description \code{cv.FastStepGraph} implements the cross-valiation for the Fast Step Graph algorithm.
 #'
 #' @param x Data matrix (of size n x p).
-#' @param n_fold Number of folds for the cross-validation procedure.
+#' @param n_folds Number of folds for the cross-validation procedure.
 #' @param alpha_f_min Minimum threshold value for the cross-validation procedure.
 #' @param alpha_f_max Minimum threshold value for the cross-validation procedure.
 #' @param n_alpha Number of elements in the grid for the cross-validation.
@@ -22,14 +22,14 @@
 #' @author Prof. Marcelo Ruiz, PhD. \email{mruiz@exa.unrc.edu.ar}
 #'
 #' @export
-cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max = 0, data_scale = FALSE, return_model = TRUE, parallel = FALSE){
-    if (fold <= 1) {stop('Number of folds must be equal or larger than 2')}
+cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, nei.max = 0, data_scale = FALSE, return_model = TRUE, parallel = FALSE){
+    if (n_folds <= 1) {stop('Number of folds must be equal or larger than 2')}
     if (data_scale) { x = scale(x) }
 
     n = nrow(x)
     p = ncol(x)
  
-    ntest = floor(n/fold)
+    ntest = floor(n/n_folds)
     ntrain = n - ntest
     ind = sample(n)
     alpha_f = seq(alpha_f_min, alpha_f_max, length=n_alpha)
@@ -47,7 +47,7 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
         
         alpha_f_losses <- foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
             loss = 0
-            for (k in 1:fold) {
+            for (k in 1:n_folds) {
                 sel = ((k-1)*ntest+1):(k*ntest)
                 x.train = x[ind[-sel], ]
                 x.test = x[ind[sel], ]
@@ -57,8 +57,8 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
                                      nei.max = nei.max)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
-            if (loss/fold < old_loss) {
-                old_loss = loss/fold
+            if (loss/n_folds < old_loss) {
+                old_loss = loss/n_folds
                 alpha_f_opt = f
                 alpha_b_opt = 0.5*f
             }
@@ -71,7 +71,7 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
         alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
         alpha_b_losses <- foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
             loss = 0
-            for (k in 1:fold) {
+            for (k in 1:n_folds) {
                 sel = ((k-1)*ntest+1):(k*ntest)
                 x.train = x[ind[-sel], ]
                 x.test = x[ind[sel], ]
@@ -81,8 +81,8 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
                                      nei.max = nei.max)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
-            if (loss/fold < old_loss) {
-                old_loss = loss/fold
+            if (loss/n_folds < old_loss) {
+                old_loss = loss/n_folds
                 alpha_b_opt = b
             }
             old_loss
@@ -95,7 +95,7 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
     else {
         for (i in 1:length(alpha_f)) {
             loss = 0
-            for (k in 1:fold) {
+            for (k in 1:n_folds) {
                 sel = ((k-1)*ntest+1):(k*ntest)
                 x.train = x[ind[-sel], ]
                 x.test = x[ind[sel], ]
@@ -105,8 +105,8 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
                                      nei.max = nei.max)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
-            if (loss/fold < old_loss) {
-                old_loss = loss/fold
+            if (loss/n_folds < old_loss) {
+                old_loss = loss/n_folds
                 alpha_f_opt = alpha_f[i]
                 alpha_b_opt = 0.5*alpha_f[i]
             }
@@ -115,7 +115,7 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
         alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
         for (b in alpha_b) {
             loss = 0
-            for (k in 1:fold) {
+            for (k in 1:n_folds) {
                 sel = ((k-1)*ntest+1):(k*ntest)
                 x.train = x[ind[-sel], ]
                 x.test = x[ind[sel], ]
@@ -125,8 +125,8 @@ cv.FastStepGraph = function(x, fold, alpha_f_min, alpha_f_max, n_alpha, nei.max 
                                      nei.max = nei.max)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
-            if (loss/fold < old_loss) {
-                old_loss = loss/fold
+            if (loss/n_folds < old_loss) {
+                old_loss = loss/n_folds
                 alpha_b_opt = b
             }
         }
