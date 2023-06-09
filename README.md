@@ -8,4 +8,4 @@ This implementation builds upon the original code available at [link](https://jd
 
 Despite these enhancements, the primary bottleneck of Fast Step Graph lies in the requirement of substantial memory resources $\text{Memory} \propto \Big(\frac{p(p-1)}{2}\Big)$ for storing the entire graph, particularly when $p$ grows.
 
-Clone this repository or simply download the .zip and follow the instructions in [this link to run an example](instructions.md).
+Clone this repository or simply download the .zip file and follow the instructions in [this link to run an example](instructions.md).
