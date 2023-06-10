@@ -39,11 +39,19 @@ cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, nei.m
     alpha_f_opt = NA
     alpha_b_opt = NA
     
-    
     if (parallel) { 
-        cores = detectCores()
-        cl = makeCluster(cores[1]-1, type = "FORK") # not to overload your computer
-        registerDoParallel(cl)
+        if(.Platform$OS.type == "unix") {
+          library(doParallel) # needed linux to parallelize on Linux
+          cores = detectCores()
+          cl = makeCluster(cores[1]-1, type = "FORK") # not to overload your computer "FORK"
+          registerDoParallel(cl)
+        } 
+        else {
+          library(doSNOW) # needed linux to parallelize on Windows
+          cores = detectCores()
+          cl = makeCluster(cores[1]-1, type="SOCK")
+          registerDoSNOW(cl)
+        }
         
         alpha_f_losses <- foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
             loss = 0
