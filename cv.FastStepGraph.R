@@ -41,13 +41,13 @@ cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, nei.m
     
     if (parallel) { 
         if(.Platform$OS.type == "unix") {
-          library(doParallel) # needed linux to parallelize on Linux
+          library(doParallel) # needed to parallelize on Linux
           cores = detectCores()
           cl = makeCluster(cores[1]-1, type = "FORK") # not to overload your computer "FORK"
           registerDoParallel(cl)
         } 
         else {
-          library(doSNOW) # needed linux to parallelize on Windows
+          library(doSNOW) # needed to parallelize on Windows
           cores = detectCores()
           cl = makeCluster(cores[1]-1, type="SOCK")
           registerDoSNOW(cl)
