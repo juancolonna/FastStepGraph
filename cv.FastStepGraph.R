@@ -54,6 +54,7 @@ cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, nei.m
         }
         
         alpha_f_losses <- foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
+            source('FastStepGraph.R')
             loss = 0
             for (k in 1:n_folds) {
                 sel = ((k-1)*ntest+1):(k*ntest)
