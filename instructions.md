@@ -72,3 +72,23 @@ print(res$alpha_b_opt)
 
 print(res$model$Omega)
 ```
+
+We also offer an exhaustive search version based on Grid Search to determine the optimal combination of $\alpha_f$ and $\alpha_b$. This version can be executed in parallel, but only if the `parallel=TRUE` parameter is passed.
+
+```{r}
+source('grid.cv.FastStepGraph.R')
+
+t0 <- Sys.time() # INITIAL TIME
+res = grid.cv.FastStepGraph(X, 
+                            n_folds = 5, 
+                            alpha_f_min = 0.01, 
+                            alpha_f_max = 0.7,
+                            n_alpha = 20, 
+                            alpha_b_min = 0.01, 
+                            alpha_b_max = 0.7,
+                            parallel = TRUE)
+difftime(Sys.time(), t0, units = "secs")
+
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
+```
