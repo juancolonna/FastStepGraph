@@ -73,7 +73,7 @@ print(res$alpha_b_opt)
 print(res$model$Omega)
 ```
 
-We also offer an exhaustive search version based on Grid Search to determine the optimal combination of $\alpha_f$ and $\alpha_b$. This version can be executed in parallel, but only if the `parallel=TRUE` parameter is passed.
+We also offer an exhaustive search version based on Grid Search to determine the optimal combination of $\alpha_f$ and $\alpha_b$. This version can also be executed in parallel if the `parallel=TRUE` parameter is passed.
 
 ```{r}
 source('grid.cv.FastStepGraph.R')
