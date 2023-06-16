@@ -49,6 +49,8 @@ difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
 print(res$alpha_b_opt)
+
+print(res$model$Omega)
 ```
 However, this is not an exhaustive grid search. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$.
 
@@ -67,4 +69,6 @@ difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
 print(res$alpha_b_opt)
+
+print(res$model$Omega)
 ```
