@@ -26,8 +26,10 @@
 #' @author Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}
 #'
 
-grid.cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, alpha_b_min, alpha_b_max, nei.max = 0, data_scale = FALSE, return_model = TRUE, parallel = FALSE){
-    if (n_folds <= 1) {stop('Number of folds must be equal or larger than 2')}
+grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9, n_alpha=32, nei.max = 5, data_scale = FALSE, return_model = TRUE, parallel = FALSE){
+    if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
+    if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
+    if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
     if (data_scale) { x = scale(x) }
 
     n = nrow(x)
@@ -38,7 +40,7 @@ grid.cv.FastStepGraph = function(x, n_folds, alpha_f_min, alpha_f_max, n_alpha, 
     ntrain = n - ntest
     ind = sample(n)
     alpha_f = seq(alpha_f_min, alpha_f_max, length=n_alpha)
-    alpha_b = seq(alpha_b_min, alpha_b_max, length=n_alpha)
+    alpha_b = alpha_f
     loss_grid = matrix(NA, nrow = n_alpha, ncol = n_alpha)
 
     old_loss = Inf

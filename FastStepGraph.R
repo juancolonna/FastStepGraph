@@ -18,16 +18,18 @@
 #' @author Prof. Marcelo Ruiz, PhD. \email{mruiz@exa.unrc.edu.ar}
 #' 
 #' @export
-FastStepGraph = function(x, alpha_f, alpha_b=0, nei.max=0, data_scale=FALSE){
+FastStepGraph = function(x, alpha_f, alpha_b=0, nei.max=5, data_scale=FALSE){
     if (data_scale) { x = scale(x) }
-    n = dim(x)[1] # number of rows
-    p = dim(x)[2] # number of columns
+    n = dim(x)[1] # number of rows (samples)
+    p = dim(x)[2] # number of columns (variables)
 
+    if (missing(alpha_f)){ stop("alpha_f missing.") }
     if (alpha_f < alpha_b){ stop("alpha_b must be lower than alpha_f") }
     if (alpha_b == 0){ alpha_b = 0.5*alpha_f }
-    if (nei.max >= n) { stop('Neiborgs must be less than n-1') }
-    if (nei.max == 0 && n <= p){nei.max = n-1 }
-    if (nei.max == 0 && p < n){nei.max = p }
+    if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.')}
+    if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
+    # if (nei.max == 0 && n <= p){nei.max = n-1 }
+    # if (nei.max == 0 && p < n){nei.max = p }
     
     Edges_I = t(combn(1:p,2)) # Inactive set of ordered pair (i,j)
     Edges_A = t(matrix(0,2,dim(Edges_I)[1])) # Active set of ordered pair (i,j)
