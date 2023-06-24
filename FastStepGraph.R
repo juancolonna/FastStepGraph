@@ -3,10 +3,10 @@
 #' @description Improved and faster implementation of the Stepwise Gaussian Graphical Algorithm.
 #'
 #' @param x Data matrix (of size n_samples x p_variables).
-#' @param alpha_f Forward threshold.
+#' @param alpha_f Forward threshold  (no default value).
 #' @param alpha_b Backward threshold. If alpha_b=0, then the alpha_b=0.5*alpha_f rule is applied.
-#' @param nei.max Maximum number of variables in every neighborhood.
-#' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance. Defalut FALSE
+#' @param nei.max Maximum number of variables in every neighborhood (default value 5).
+#' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #'
 #' @return A list with the values: 
 #' \item{\code{vareps}}{Response variables.}

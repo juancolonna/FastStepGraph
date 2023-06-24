@@ -4,14 +4,14 @@
 #' @description \code{cv.FastStepGraph} implements the cross-valiation for the Fast Step Graph algorithm.
 #'
 #' @param x Data matrix (of size n x p).
-#' @param n_folds Number of folds for the cross-validation procedure.
-#' @param alpha_f_min Minimum threshold value for the cross-validation procedure.
-#' @param alpha_f_max Minimum threshold value for the cross-validation procedure.
-#' @param n_alpha Number of elements in the grid for the cross-validation.
-#' @param nei.max Maximum number of variables in every neighborhood.
-#' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance. Defalut FALSE
-#' @param return_model Boolean parameter (TRUE or FALSE), when to return the output of FastStepGraph function. Defalut TRUE
-#' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel (multicore architecture)
+#' @param n_folds Number of folds for the cross-validation procedure (default value 5).
+#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.1).
+#' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.9).
+#' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
+#' @param nei.max Maximum number of variables in every neighborhood (default value 5).
+#' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
+#' @param return_model Boolean parameter (TRUE or FALSE), when to return the output of FastStepGraph function (default TRUE).
+#' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #'
 #' @return A list with the values: \cr \cr
 #' \code{alpha_f_opt}: the optimal alpha_f value, \cr \cr
