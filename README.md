@@ -11,4 +11,5 @@ Despite these enhancements, the primary bottleneck of Fast Step Graph lies in th
 Clone this repository or simply download the .zip file and follow the instructions in [this link to run an example](instructions.md).
 
 How to cite this repo?
+
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8233706.svg)](https://doi.org/10.5281/zenodo.8233706)
