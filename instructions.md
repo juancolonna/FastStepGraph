@@ -44,7 +44,7 @@ difftime(Sys.time(), t0, units = "secs")
 print(res$alpha_f_opt)
 print(res$alpha_b_opt)
 
-print(res$model$Omega)
+print(res$Omega)
 ```
 The arguments `n_folds = 5`, `alpha_f_min = 0.1`, `alpha_f_max = 0.9`, `n_alpha = 32` (size of the grid search) and `nei.max = 5`, have defaults values and can be omitted. Note that, `cv.FastStepGraph(X)` is not an exhaustive grid search over $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$.
 
@@ -58,7 +58,7 @@ difftime(Sys.time(), t0, units = "secs")
 print(res$alpha_f_opt)
 print(res$alpha_b_opt)
 
-print(res$model$Omega)
+print(res$Omega)
 ```
 
 We also offer an exhaustive search version based on Grid Search to determine the optimal combination of $\alpha_f$ and $\alpha_b$. This version can also be executed in parallel if the `parallel=TRUE` parameter is passed.
