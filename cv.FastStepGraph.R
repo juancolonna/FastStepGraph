@@ -14,15 +14,19 @@
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #'
 #' @return A list with the values: \cr \cr
-#' \code{alpha_f_opt}: the optimal alpha_f value, \cr \cr
-#' \code{alpha_f_opt}: the optimal alpha_f value, \cr \cr
-#' \code{CV.loss}: minimum loss, \cr \cr
+#' \item{\code{alpha_f_opt}: the optimal alpha_f value.}
+#' \item{\code{alpha_f_opt}: the optimal alpha_f value.}
+#' \item{\code{CV.loss}: minimum loss.}
+#' \item{\code{vareps}: Response variables.}
+#' \item{\code{beta}: Regression coefficients.}
+#' \item{\code{Edges}: Estimated set of edges.}
+#' \item{\code{Omega}: Estimated precision matrix.}
 #'
 #' @author Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}
 #' @author Prof. Marcelo Ruiz, PhD. \email{mruiz@exa.unrc.edu.ar}
 #'
 #' @export
-cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, return_model = TRUE, parallel = FALSE){
+cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, parallel = FALSE){
     if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
     if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
     if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
@@ -65,8 +69,9 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
                 beta = FastStepGraph(x.train, 
                                      alpha_f = f, 
                                      alpha_b = 0.5*f, 
-                                     nei.max = nei.max)$beta
-                loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
+                                     nei.max = nei.max,
+                                     data_scale = data_scale)$beta
+               loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
             if (loss/n_folds < old_loss) {
                 old_loss = loss/n_folds
@@ -89,7 +94,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
                 beta = FastStepGraph(x.train, 
                                      alpha_f = alpha_f_opt, 
                                      alpha_b = b, 
-                                     nei.max = nei.max)$beta
+                                     nei.max = nei.max,
+                                     data_scale = data_scale)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
             if (loss/n_folds < old_loss) {
@@ -113,7 +119,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
                 beta = FastStepGraph(x.train, 
                                      alpha_f = alpha_f[i], 
                                      alpha_b = 0.5*alpha_f[i], 
-                                     nei.max = nei.max)$beta
+                                     nei.max = nei.max,
+                                     data_scale = data_scale)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
             if (loss/n_folds < old_loss) {
@@ -133,7 +140,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
                 beta = FastStepGraph(x.train, 
                                      alpha_f = alpha_f_opt, 
                                      alpha_b = b, 
-                                     nei.max = nei.max)$beta
+                                     nei.max = nei.max,
+                                     data_scale = data_scale)$beta
                 loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
             if (loss/n_folds < old_loss) {
@@ -143,11 +151,12 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
         }
     }
     
-    if (return_model) {
-        G = FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
-        return(list(alpha_f_opt = alpha_f_opt, alpha_b_opt = alpha_b_opt, CV.loss = old_loss, model=G))
-    }
-    else{
-        return(list(alpha_f_opt = alpha_f_opt, alpha_b_opt = alpha_b_opt, CV.loss = old_loss))
-    }
+    G = FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max, data_scale = data_scale)
+    return(list(alpha_f_opt = alpha_f_opt, 
+                alpha_b_opt = alpha_b_opt, 
+                CV.loss = old_loss, 
+                vareps = G$vareps, 
+                beta = G$beta, 
+                Edges = G$Edges, 
+                Omega = G$Omega))
 }
