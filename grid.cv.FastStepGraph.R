@@ -63,11 +63,9 @@ grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9,
         registerDoSNOW(cl)
       }
       
-      # alpha_f_losses <- foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
       losses_and_alphas <- foreach(i = 1:n_alpha, .combine = 'c', .inorder=TRUE) %dopar% {
       source('FastStepGraph.R')
 
-      # for (i in 1:n_alpha) {
           for (j in 1:n_alpha) {
               if (alpha_f[i] >= alpha_b[j]) {
                   loss = 0
