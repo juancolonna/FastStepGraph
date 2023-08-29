@@ -29,15 +29,14 @@
 #'
 
 grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9, n_alpha=32, nei.max = 5, data_scale = FALSE, parallel = FALSE){
+    n = nrow(x)
+    p = ncol(x)
+    
     if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
     if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
     if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
     if (data_scale) { x = scale(x) }
 
-    n = nrow(x)
-    p = ncol(x)
- 
-    # set.seed(123)
     ntest = floor(n/n_folds)
     ntrain = n - ntest
     ind = sample(n)
@@ -79,8 +78,7 @@ grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9,
                       beta = FastStepGraph(x.train,
                                            alpha_f = alpha_f[i],
                                            alpha_b = alpha_b[j],
-                                           nei.max = nei.max,
-                                           data_scale = data_scale)$beta
+                                           nei.max = nei.max)$beta
                       loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
                   }
                   new_loss = loss/n_folds
@@ -120,8 +118,7 @@ grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9,
               beta = FastStepGraph(x.train,
                                    alpha_f = alpha_f[i],
                                    alpha_b = alpha_b[j],
-                                   nei.max = nei.max,
-                                   data_scale = data_scale)$beta
+                                   nei.max = nei.max)$beta
               loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
             }
             new_loss = loss/n_folds
@@ -136,7 +133,7 @@ grid.cv.FastStepGraph = function(x, n_folds=5, alpha_f_min=0.1, alpha_f_max=0.9,
       }
     }
 
-    G = FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max, data_scale = data_scale)
+    G = FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
     return(list(alpha_f_opt = alpha_f_opt, 
                 alpha_b_opt = alpha_b_opt, 
                 CV.loss = old_loss, 
