@@ -1,0 +1,123 @@
+Patient_ID,Replicate_Measurement_IDs,Sample_Tumor_Normal,TMT.Plex,TMT.Channel,Stage,Ischemia.Time.in.Minutes,PAM50,NMF.Cluster,NMF.Cluster.Membership.Score,Age.in.Month,Gender,Ethnicity,ER.Updated.Clinical.Status,PR.Clinical.Status,ERBB2.Updated.Clinical.Status,TNBC.Updated.Clinical.Status,ERBB2.Proteogenomic.Status,TOP2A.Proteogenomic.Status
+CPT000814,CPT000814,Tumor,13,127C,Stage IIA,,Basal,Basal-I,1.0,,,black.or.african.american,negative,negative,,positive,negative,negative
+CPT001846,CPT001846,Tumor,12,128C,Stage III,,Basal,Basal-I,0.672,,,white,negative,negative,,positive,negative,negative
+X01BR001,X01BR001,Tumor,2,129N,Stage IIB,0.0,Basal,Basal-I,0.782,660.0,female,black.or.african.american,negative,negative,negative,positive,negative,negative
+X01BR008,X01BR008,Tumor,16,127C,,,Basal,Basal-I,0.958,,,,,,,,negative,negative
+X01BR009,X01BR009,Tumor,16,127N,,,Basal,Basal-I,0.825,,,,negative,negative,,positive,negative,negative
+X01BR010,X01BR010,Tumor,17,130C,,,Her2,HER2-I,0.734,,,,negative,negative,,positive,negative,negative
+X01BR015,X01BR015,Tumor,2,128N,Stage IIB,1.0,LumA,LumA-I,0.55,420.0,female,white,positive,positive,negative,negative,negative,negative
+X01BR017,X01BR017,Tumor,1,130C,Stage III,0.0,Her2,Basal-I,0.508,540.0,female,white,negative,negative,positive,negative,positive,negative
+X01BR018,X01BR018,Tumor,7,129N,Stage IIIA,1.0,Basal,Basal-I,0.915,792.0,female,white,positive,negative,negative,negative,negative,negative
+X01BR020,X01BR020,Tumor,17,127C,,,Basal,Basal-I,0.913,,,,negative,negative,,positive,negative,negative
+X01BR023,X01BR023,Tumor,17,126,,,LumA,LumB-I,1.0,,,,positive,positive,equivocal,negative,negative,negative
+X01BR025,X01BR025,Tumor,9,127N,Stage IIIA,6.0,LumA,LumB-I,0.551,744.0,female,black.or.african.american,positive,positive,equivocal,negative,negative,negative
+X01BR026,X01BR026,Tumor,16,129N,,,Basal,Basal-I,0.555,,,white,negative,negative,,positive,negative,negative
+X01BR027,X01BR027,Tumor,3,127N,Stage IIA,8.0,Basal,Basal-I,1.0,960.0,female,black.or.african.american,negative,negative,negative,positive,negative,negative
+X01BR030,X01BR030,Tumor,7,128C,Stage IIIA,4.0,LumA,LumA-I,0.409,1010.0,female,black.or.african.american,positive,positive,negative,negative,negative,negative
+X01BR031,X01BR031,Tumor,6,130N,Stage III,9.0,Basal,Basal-I,0.816,740.0,female,black.or.african.american,negative,negative,,positive,negative,negative
+X01BR032,X01BR032,Tumor,2,130N,Stage IIIB,0.0,LumB,LumB-I,0.854,557.0,female,white,positive,positive,negative,negative,negative,negative
+X01BR033,X01BR033,Tumor,5,128N,Stage III,10.0,LumA,LumA-I,0.634,485.0,female,black.or.african.american,positive,positive,negative,negative,negative,negative
+X01BR040,X01BR040,Tumor,11,127N,Stage IIB,,Basal,Basal-I,0.938,,,black.or.african.american,negative,negative,,positive,negative,negative
+X01BR042,X01BR042,Tumor,13,128N,,,Basal,Basal-I,0.99,,,black.or.african.american,negative,negative,,positive,negative,negative
+X01BR043,X01BR043,Tumor,9,129C,,,Basal,Basal-I,0.825,,,white,negative,negative,,positive,negative,negative
+X03BR002,X03BR002,Tumor,12,126,Stage IIIA,15.0,LumA,LumA-I,0.6,727.0,female,white,positive,positive,negative,negative,negative,negative
+X03BR004,X03BR004,Tumor,3,130N,Stage IIB,24.0,LumA,LumA-I,0.559,1064.0,female,white,positive,positive,negative,negative,negative,negative
+X03BR005,X03BR005,Tumor,7,126,Stage IIA,12.0,LumA,LumA-I,1.0,738.0,female,white,positive,positive,negative,negative,negative,negative
+X03BR006,X03BR006,Tumor,16,130N,,,Basal,Basal-I,0.93,,,white,negative,negative,,positive,negative,negative
+X03BR010,X03BR010,Tumor,5,129C,Stage IIA,21.0,LumA,LumB-I,0.791,943.0,female,white,positive,positive,negative,negative,negative,negative
+X03BR011,X03BR011,Tumor,17,129C,,,LumA,LumB-I,0.65,,,white,positive,negative,,negative,negative,negative
+X03BR013,X03BR013,Tumor,3,128C,Stage IIA,9.0,LumA,LumA-I,0.779,626.0,female,,positive,positive,negative,negative,negative,negative
+X05BR001,X05BR001,Tumor,6,128N,Stage IIB,29.0,Basal,HER2-I,0.586,840.0,female,white,negative,positive,negative,negative,negative,negative
+X05BR003,X05BR003,Tumor,9,130N,Stage IIB,30.0,LumA,LumA-I,0.781,451.0,female,white,positive,positive,negative,negative,negative,negative
+X05BR004,X05BR004,Tumor,16,129C,,,LumA,LumA-I,0.535,,,white,positive,positive,,negative,negative,negative
+X05BR005,X05BR005,Tumor,12,130C,Stage IA,11.0,LumA,LumA-I,0.607,600.0,female,white,positive,positive,negative,negative,negative,negative
+X05BR009,X05BR009,Tumor,9,126,Stage IIIC,28.0,LumA,LumA-I,1.0,772.0,female,white,positive,positive,negative,negative,negative,negative
+X05BR016,X05BR016,Tumor,7,128N,Stage IIB,20.0,LumA,LumB-I,0.786,938.0,female,white,positive,positive,negative,negative,negative,negative
+X05BR026,X05BR026,Tumor,10,127N,Stage IIA,19.0,LumA,LumA-I,0.683,858.0,female,white,positive,positive,positive,negative,positive,negative
+X05BR029,X05BR029,Tumor,9,130C,Stage IIA,13.0,Basal,Basal-I,0.898,743.0,female,white,negative,negative,negative,positive,negative,negative
+X05BR038,X05BR038,Tumor,11,128C,Stage IA,22.0,LumA,LumA-I,0.598,627.0,female,white,positive,positive,negative,negative,negative,negative
+X05BR042,X05BR042,Tumor,7,129C,Stage IIB,20.0,Basal,Basal-I,1.0,480.0,female,white,negative,negative,negative,positive,negative,negative
+X05BR043,X05BR043,Tumor,10,126,Stage IIB,16.0,Basal,Basal-I,0.771,600.0,female,white,negative,negative,negative,positive,negative,negative
+X05BR044,X05BR044,Tumor,8,126,Stage IIB,17.0,Her2,HER2-I,0.863,753.0,female,white,positive,negative,negative,negative,negative,negative
+X05BR045,X05BR045,Tumor,2,130C,Stage IIA,13.0,Basal,Basal-I,0.826,720.0,female,white,negative,negative,equivocal,positive,negative,negative
+X06BR003,X06BR003,Tumor,1,129N,Stage IIA,11.0,Her2,HER2-I,0.333,900.0,female,hispanic.or.latino,positive,negative,equivocal,negative,negative,positive
+X06BR005,X06BR005,Tumor,8,129C,Stage IIA,15.0,LumA,LumB-I,0.604,696.0,female,hispanic.or.latino,positive,positive,equivocal,negative,negative,negative
+X06BR006,X06BR006,Tumor,2,126,,14.0,Normal-like,LumA-I,0.824,612.0,female,hispanic.or.latino,negative,negative,equivocal,negative,positive,negative
+X06BR014,X06BR014,Tumor,12,128N,Stage IIB,16.0,LumA,LumB-I,0.577,612.0,female,hispanic.or.latino,positive,positive,negative,negative,negative,negative
+X09BR001,X09BR001,Tumor,17,129N,,,LumA,LumB-I,0.799,,,,positive,positive,,negative,negative,negative
+X09BR004,X09BR004,Tumor,11,130N,Stage IIA,12.0,Normal-like,Basal-I,0.446,904.0,female,white,positive,positive,positive,negative,positive,positive
+X09BR005,X09BR005,Tumor,2,127N,Stage IIB,22.0,Her2,HER2-I,0.569,459.0,female,white,positive,positive,positive,negative,positive,positive
+X09BR007,X09BR007,Tumor,4,130N,Stage IIIA,7.0,LumA,LumB-I,0.423,930.0,female,white,positive,positive,positive,negative,negative,negative
+X11BR003,X11BR003,Tumor,3,130C,Stage IIA,5.0,Basal,Basal-I,0.784,643.0,female,asian,negative,negative,negative,positive,negative,negative
+X11BR004,X11BR004,Tumor,9,128C,Stage IIA,5.0,Her2,HER2-I,0.782,654.0,female,asian,positive,positive,positive,negative,positive,negative
+X11BR006,X11BR006,Tumor,8,127N,Stage IIA,6.0,LumA,LumA-I,0.383,654.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR009,X11BR009,Tumor,4,128C,Stage IIIC,1.0,LumB,LumB-I,0.776,530.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR010,X11BR010,Tumor,6,129C,Stage IIB,10.0,LumA,HER2-I,0.811,427.0,female,asian,positive,positive,positive,negative,positive,negative
+X11BR011,X11BR011|X11BR011.REP1,Tumor,6|17,130C|127N,Stage IIIA,10.0,LumB,HER2-I,0.648,858.0,female,asian,positive,positive,equivocal,negative,positive,negative
+X11BR012,X11BR012,Tumor,13,130N,Stage IIA,9.0,LumA,LumB-I,0.814,924.0,female,white,positive,negative,negative,negative,negative,negative
+X11BR013,X11BR013,Tumor,5,129N,Stage IIA,9.0,LumB,LumB-I,0.872,840.0,female,white,positive,negative,negative,negative,negative,negative
+X11BR014,X11BR014,Tumor,6,128C,Stage IIIA,11.0,LumA,LumA-I,0.72,476.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR015,X11BR015,Tumor,9,127C,Stage IIIA,12.0,LumB,LumB-I,0.941,720.0,female,white,positive,negative,negative,negative,negative,negative
+X11BR016,X11BR016,Tumor,8,128C,Stage IIA,12.0,Basal,Basal-I,0.937,371.0,female,white,negative,negative,negative,positive,negative,negative
+X11BR017,X11BR017,Tumor,2,127C,Stage IIIA,11.0,Her2,HER2-I,0.75,897.0,female,white,negative,negative,negative,positive,negative,negative
+X11BR018,X11BR018,Tumor,8,130C,Stage IIIA,11.0,LumA,LumA-I,0.962,653.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR019,X11BR019,Tumor,5,127N,Stage IIA,12.0,LumB,LumB-I,0.658,735.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR020,X11BR020,Tumor,4,130C,Stage IIA,10.0,LumA,HER2-I,0.637,450.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR022,X11BR022,Tumor,5,128C,Stage IIA,7.0,LumA,LumA-I,0.414,584.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR023,X11BR023,Tumor,1,128N,Stage IIA,6.0,Basal,Basal-I,0.957,702.0,female,white,negative,negative,negative,positive,negative,negative
+X11BR024,X11BR024,Tumor,7,127C,Stage IIA,7.0,Basal,Basal-I,0.903,969.0,female,white,negative,negative,negative,positive,negative,negative
+X11BR025,X11BR025,Tumor,2,128C,Stage IIA,8.0,LumA,LumB-I,0.934,929.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR027,X11BR027,Tumor,11,126,Stage IIA,11.0,LumA,LumB-I,0.738,914.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR028,X11BR028,Tumor,4,126,Stage IIA,10.0,Her2,HER2-I,0.588,664.0,female,white,negative,negative,positive,negative,positive,negative
+X11BR030,X11BR030,Tumor,6,126,Stage IIA,15.0,Her2,HER2-I,0.78,609.0,female,asian,negative,negative,positive,negative,positive,negative
+X11BR031,X11BR031|X11BR031.REP1,Tumor,2|5,129C|130C,Stage IIA,10.0,LumA,HER2-I,0.572,600.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR032,X11BR032,Tumor,3,129N,Stage IIA,15.0,LumA,LumA-I,0.632,597.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR036,X11BR036|X11BR036.REP1|X11BR036.REP2,Tumor,10|12|17,128C|129C|130N,Stage IIA,15.0,Basal,Basal-I,0.606,619.0,female,asian,negative,negative,negative,positive,negative,negative
+X11BR038,X11BR038,Tumor,10,128N,Stage IIA,10.0,Her2,HER2-I,0.726,569.0,female,asian,negative,,positive,negative,positive,negative
+X11BR040,X11BR040,Tumor,9,128N,Stage IIIA,5.0,LumA,LumA-I,0.606,814.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR042,X11BR042,Tumor,8,130N,Stage IIA,8.0,Her2,HER2-I,0.978,857.0,female,white,negative,negative,negative,positive,negative,negative
+X11BR043,X11BR043,Tumor,1,127N,Stage IIB,8.0,LumB,LumB-I,0.638,440.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR044,X11BR044,Tumor,8,128N,Stage IIIA,10.0,LumB,LumB-I,0.606,576.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR047,X11BR047,Tumor,1,126,Stage IIA,15.0,LumA,LumA-I,0.485,710.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR049,X11BR049,Tumor,1,127C,Stage IIIA,10.0,LumB,LumB-I,0.638,550.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR050,X11BR050,Tumor,6,127C,Stage IIA,10.0,LumA,LumA-I,0.862,648.0,female,asian,positive,positive,negative,negative,negative,negative
+X11BR051,X11BR051,Tumor,11,128N,Stage IIIA,10.0,LumA,LumB-I,0.418,785.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR053,X11BR053|X11BR053.REP1,Tumor,3|11,126|129N,Stage IIA,10.0,LumB,LumB-I,0.744,743.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR054,X11BR054,Tumor,7,130N,Stage IIA,9.0,LumA,LumB-I,0.809,1013.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR055,X11BR055,Tumor,8,129N,Stage IIA,8.0,LumA,LumA-I,0.641,675.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR056,X11BR056,Tumor,10,127C,Stage IIB,15.0,LumA,HER2-I,0.623,634.0,female,asian,positive,negative,negative,negative,negative,negative
+X11BR058,X11BR058,Tumor,13,129C,Stage IIA,5.0,Normal-like,HER2-I,0.91,787.0,female,asian,negative,,negative,,negative,negative
+X11BR059,X11BR059,Tumor,11,127C,Stage IIA,5.0,Normal-like,HER2-I,0.79,551.0,female,asian,positive,,negative,negative,negative,negative
+X11BR060,X11BR060|X11BR060.REP1,Tumor,11|16,129C|126,Stage IIB,5.0,Her2,HER2-I,0.795,634.0,female,asian,negative,negative,positive,negative,positive,positive
+X11BR072,X11BR072,Tumor,10,130C,Stage IIIC,5.0,LumA,LumA-I,0.863,848.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR073,X11BR073,Tumor,4,128N,Stage IIIA,5.0,LumB,LumB-I,0.472,775.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR074,X11BR074,Tumor,1,129C,Stage IIIA,5.0,LumA,LumA-I,0.862,794.0,female,white,positive,positive,negative,negative,negative,negative
+X11BR075,X11BR075,Tumor,11,130C,Stage IIIA,5.0,LumB,LumB-I,0.484,953.0,female,white,positive,,negative,negative,negative,negative
+X11BR080,X11BR080,Tumor,13,127N,Stage IIB,5.0,Basal,Basal-I,0.767,820.0,female,white,positive,positive,negative,negative,negative,negative
+X13BR009,X13BR009,Tumor,13,126,Stage IIIB,22.0,LumB,LumB-I,0.618,900.0,female,white,positive,positive,negative,negative,negative,negative
+X14BR005,X14BR005|X14BR005.REP1,Tumor,8|16,127C|130C,Stage IIA,12.0,LumA,LumB-I,0.871,940.0,female,white,positive,positive,,negative,negative,negative
+X14BR008,X14BR008,Tumor,3,127C,Stage IIIA,22.0,LumA,LumA-I,0.988,796.0,female,white,positive,positive,negative,negative,negative,negative
+X14BR014,X14BR014,Tumor,13,129N,Stage IIA,18.0,LumA,LumA-I,0.828,710.0,female,white,positive,positive,negative,negative,negative,negative
+X15BR003,X15BR003,Tumor,13,128C,Stage IIA,1.0,LumA,LumA-I,0.849,895.0,female,white,positive,negative,negative,negative,negative,negative
+X16BR012,X16BR012,Tumor,12,127C,Stage IIIC,20.0,LumB,LumB-I,0.43,570.0,female,white,,,,,negative,negative
+X18BR002,X18BR002,Tumor,3,128N,Stage IIIA,11.0,Her2,HER2-I,0.533,769.0,female,white,negative,negative,negative,positive,negative,negative
+X18BR003,X18BR003,Tumor,7,127N,Stage IIA,7.0,LumB,LumB-I,0.612,790.0,female,white,positive,negative,negative,negative,negative,negative
+X18BR004,X18BR004,Tumor,4,127N,Stage IIA,8.0,LumA,LumB-I,0.837,921.0,female,white,positive,positive,negative,negative,negative,negative
+X18BR006,X18BR006,Tumor,10,129C,Stage IIA,8.0,LumB,LumB-I,0.371,748.0,female,white,positive,positive,negative,negative,negative,negative
+X18BR007,X18BR007,Tumor,6,127N,Stage IIA,11.0,LumA,LumA-I,0.615,768.0,female,white,positive,positive,equivocal,negative,negative,negative
+X18BR009,X18BR009,Tumor,10,129N,Stage IIA,7.0,Normal-like,HER2-I,0.578,762.0,female,white,negative,negative,positive,negative,positive,negative
+X18BR010,X18BR010,Tumor,1,128C,Stage IIIA,5.0,LumA,LumA-I,0.69,492.0,female,white,positive,positive,negative,negative,negative,negative
+X18BR016,X18BR016,Tumor,12,130N,Stage IA,9.0,LumA,LumA-I,0.757,885.0,female,white,positive,,negative,negative,negative,negative
+X18BR017,X18BR017,Tumor,1,130N,Stage IA,14.0,LumA,HER2-I,0.539,872.0,female,white,positive,negative,negative,negative,negative,negative
+X18BR019,X18BR019,Tumor,4,129N,Stage IIIA,13.0,LumA,LumB-I,0.569,817.0,female,white,positive,positive,negative,negative,negative,negative
+X20BR001,X20BR001,Tumor,4,129C,Stage IIA,22.0,LumA,LumB-I,0.711,986.0,female,black.or.african.american,positive,positive,negative,negative,negative,negative
+X20BR002,X20BR002,Tumor,5,126,Stage IIA,16.0,Basal,Basal-I,0.711,1144.0,female,white,negative,positive,negative,negative,negative,negative
+X20BR005,X20BR005,Tumor,4,127C,Stage IIB,26.0,Basal,Basal-I,0.632,568.0,female,black.or.african.american,negative,negative,negative,positive,negative,negative
+X20BR006,X20BR006,Tumor,17,128N,Stage IIB,18.0,Basal,Basal-I,0.728,786.0,female,white,positive,negative,negative,negative,negative,negative
+X20BR007,X20BR007,Tumor,5,130N,Stage IIA,16.0,Basal,Basal-I,0.609,660.0,female,black.or.african.american,negative,negative,negative,positive,negative,negative
+X20BR008,X20BR008,Tumor,5,127C,Stage IIIB,11.0,Her2,HER2-I,0.481,863.0,female,black.or.african.american,negative,negative,negative,positive,negative,negative
+X21BR001,X21BR001,Tumor,16,128N,,,LumB,LumB-I,0.536,,,white,negative,negative,,negative,positive,negative
+X21BR002,X21BR002,Tumor,16,128C,,,LumA,LumB-I,0.443,,,white,positive,positive,,negative,negative,negative
+X21BR010,X21BR010|X21BR010.REP1,Tumor,3|17,129C|128C,Stage IIA,18.0,LumA,LumA-I,0.559,852.0,female,white,positive,positive,negative,negative,negative,negative
+X22BR005,X22BR005,Tumor,6,129N,Stage IIB,20.0,LumA,LumB-I,0.392,552.0,female,white,positive,positive,positive,negative,positive,negative
+X22BR006,X22BR006,Tumor,10,130N,Stage IIIA,25.0,LumA,LumB-I,0.402,660.0,female,black.or.african.american,positive,positive,negative,negative,negative,negative
