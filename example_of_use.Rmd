@@ -1,0 +1,53 @@
+```{r}
+setwd(getwd())
+rm(list=ls()) # Clear memory
+library(MASS)     # mvrnorm
+library(FastStepGraph)
+
+# source('FastStepGraph.R')
+# source('SigmaAR.R')
+
+# Simulate Gaussian Data with Autoregressive (AR) Model
+set.seed(1234567)
+phi = 0.4 
+p = 100  # Dimension
+n = 100 # Sample size
+
+Sigma = SigmaAR(p, phi)
+Omega = solve(Sigma)  
+Omega[abs(Omega) < 1e-5] = 0  
+
+# Generate Data from a Gaussian distribution 
+X = list()
+X = mvrnorm(n, mu=rep(0,p), Sigma)
+X = scale(X)
+```
+
+```{r}
+t0 <- Sys.time() # INITIAL TIME
+G = FastStepGraph(X, alpha_f = 0.22, alpha_b = 0.14)
+difftime(Sys.time(), t0, units = "secs")
+all.equal(Omega, G$Omega)
+```
+
+```{r}
+t0 <- Sys.time() # INITIAL TIME
+res = cv.FastStepGraph(X)
+difftime(Sys.time(), t0, units = "secs")
+
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
+all.equal(Omega, res$Omega)
+```
+To run parallel on windows first install.packages("doSNOW"), then import by library(doSNOW)
+
+
+```{r}
+t0 <- Sys.time() # INITIAL TIME
+res = cv.FastStepGraph(X, parallel = TRUE)
+difftime(Sys.time(), t0, units = "secs")
+
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
+all.equal(Omega, res$Omega)
+```

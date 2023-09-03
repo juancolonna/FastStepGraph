@@ -1,3 +1,6 @@
+To install this package run `devtools::install_github("juancolonna/FastStepGraph")`
+
+
 First, we should generate some sample data as follows:
 
 ```{r}
