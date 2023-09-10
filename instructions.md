@@ -44,7 +44,7 @@ If the `nei.max` argument is omitted, it will be 5. To find the optimal $\mathbf
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X)
+res = cv.FastStepGraph(X, data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
@@ -58,7 +58,7 @@ To increase time performance, you can run `cv.FastStepGraph(X)` in parallel. Nex
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X, parallel = TRUE)
+res = cv.FastStepGraph(X, , data_shuffle = TRUE, parallel = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
