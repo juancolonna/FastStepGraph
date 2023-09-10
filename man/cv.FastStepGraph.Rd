@@ -12,6 +12,7 @@ cv.FastStepGraph(
   n_alpha = 32,
   nei.max = 5,
   data_scale = FALSE,
+  data_shuffle = FALSE,
   parallel = FALSE
 )
 }
@@ -29,6 +30,8 @@ cv.FastStepGraph(
 \item{nei.max}{Maximum number of variables in every neighborhood (default value 5).}
 
 \item{data_scale}{Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).}
+
+\item{data_shuffle}{Boolean parameter (TRUE or FALSE), when samples (rows of X) must be randomly shuffled.}
 
 \item{parallel}{Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).}
 }

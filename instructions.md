@@ -6,7 +6,11 @@ First, we should generate some sample data as follows:
 ```{r}
 setwd(getwd())
 library(MASS)     # mvrnorm
-source('SigmaAR.R')
+library(FastStepGraph)
+
+# In case you clone the github repo
+# source('FastStepGraph.R')
+# source('SigmaAR.R')
 
 # Simulate Gaussian Data with Autoregressive (AR) Model
 set.seed(1234567)

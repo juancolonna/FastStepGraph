@@ -9,6 +9,7 @@
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
+#' @param data_shuffle Boolean parameter (TRUE or FALSE), when samples (rows of X) must be randomly shuffled.
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #'
 #' @return A list with the values: \cr \cr
@@ -41,7 +42,7 @@
 #'
 #' @export
 #' @importFrom foreach %dopar%
-cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, parallel = FALSE){
+cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, data_shuffle = FALSE, parallel = FALSE){
   n = nrow(x)
   p = ncol(x)
 
@@ -50,10 +51,10 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x = scale(x) }
+  if (data_shuffle) { x = x[sample(1:n),] }
 
   ntest = floor(n/n_folds)
   ntrain = n - ntest
-  ind = sample(n)
   alpha_f = seq(alpha_f_min, alpha_f_max, length=n_alpha)
 
   old_loss = Inf
@@ -78,8 +79,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
       loss = 0
       for (k in 1:n_folds) {
         sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[ind[-sel], ]
-        x.test = x[ind[sel], ]
+        x.train = x[-sel, ]
+        x.test = x[sel, ]
         beta = FastStepGraph(x.train,
                              alpha_f = f,
                              alpha_b = 0.5*f,
@@ -102,8 +103,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
       loss = 0
       for (k in 1:n_folds) {
         sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[ind[-sel], ]
-        x.test = x[ind[sel], ]
+        x.train = x[-sel, ]
+        x.test = x[sel, ]
         beta = FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,
@@ -126,8 +127,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
       loss = 0
       for (k in 1:n_folds) {
         sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[ind[-sel], ]
-        x.test = x[ind[sel], ]
+        x.train = x[-sel, ]
+        x.test = x[sel, ]
         beta = FastStepGraph(x.train,
                              alpha_f = alpha_f[i],
                              alpha_b = 0.5*alpha_f[i],
@@ -146,8 +147,8 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
       loss = 0
       for (k in 1:n_folds) {
         sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[ind[-sel], ]
-        x.test = x[ind[sel], ]
+        x.train = x[-sel, ]
+        x.test = x[sel, ]
         beta = FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,

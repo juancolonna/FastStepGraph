@@ -10,8 +10,8 @@ library(FastStepGraph)
 # Simulate Gaussian Data with Autoregressive (AR) Model
 set.seed(1234567)
 phi = 0.4 
-p = 100  # Dimension
-n = 100 # Sample size
+p = 50  # Dimension
+n = 50 # Sample size
 
 Sigma = SigmaAR(p, phi)
 Omega = solve(Sigma)  
@@ -32,7 +32,7 @@ all.equal(Omega, G$Omega)
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X)
+res = cv.FastStepGraph(X, data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
@@ -44,7 +44,7 @@ To run parallel on windows first install.packages("doSNOW"), then import by libr
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X, parallel = TRUE)
+res = cv.FastStepGraph(X, parallel = TRUE, data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
