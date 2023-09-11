@@ -9,7 +9,7 @@
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
-#' @param data_shuffle Boolean parameter (TRUE or FALSE), when samples (rows of X) must be randomly shuffled.
+#' @param data_shuffle Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #'
 #' @return A list with the values: \cr \cr
@@ -24,16 +24,16 @@
 #' @examples
 #' library(FastStepGraph)
 #' library(MASS) # mvrnorm
-#' phi = 0.4
-#' p = 100  # Dimension
-#' n = 100 # Sample size
-#' Sigma = SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
-#' Omega = solve(Sigma)
-#' Omega[abs(Omega) < 1e-5] = 0
-#' X = list() # Generate Data from a Gaussian distribution
-#' X = mvrnorm(n, mu=rep(0,p), Sigma)
-#' X = scale(X)
-#' res = cv.FastStepGraph(X)
+#' phi <- 0.4
+#' p <- 100  # Dimension
+#' n <- 100 # Sample size
+#' Sigma <- SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
+#' Omega <- solve(Sigma)
+#' Omega[abs(Omega) < 1e-5] <- 0
+#' X <- list() # Generate Data from a Gaussian distribution
+#' X <- mvrnorm(n, mu=rep(0,p), Sigma)
+#' X <- scale(X)
+#' res <- cv.FastStepGraph(X)
 #' print(res$alpha_f_opt)
 #' print(res$alpha_b_opt)
 #'
@@ -42,7 +42,15 @@
 #'
 #' @export
 #' @importFrom foreach %dopar%
-cv.FastStepGraph <- function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, data_shuffle = FALSE, parallel = FALSE){
+cv.FastStepGraph <- function(x, n_folds = 5, 
+                             alpha_f_min = 0.1, 
+                             alpha_f_max = 0.9, 
+                             n_alpha = 32, 
+                             nei.max = 5, 
+                             data_scale = FALSE, 
+                             data_shuffle = TRUE, 
+                             parallel = FALSE){
+  f <- NULL
   n <- nrow(x)
   p <- ncol(x)
 
@@ -50,114 +58,114 @@ cv.FastStepGraph <- function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.
   if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
-  if (data_scale) { x = scale(x) }
-  if (data_shuffle) { x = x[sample(seq_len(n)),] }
+  if (data_scale) { x <- scale(x) }
+  if (data_shuffle) { x <- x[sample(seq_len(n)),] }
 
-  ntest = floor(n/n_folds)
-  ntrain = n - ntest
-  alpha_f = seq(alpha_f_min, alpha_f_max, length=n_alpha)
+  ntest <- floor(n/n_folds)
+  ntrain <- n - ntest
+  alpha_f <- seq(alpha_f_min, alpha_f_max, length=n_alpha)
 
-  old_loss = Inf
-  new_loss = NA
-  alpha_f_opt = NA
-  alpha_b_opt = NA
+  old_loss <- Inf
+  new_loss <- NA
+  alpha_f_opt <- NA
+  alpha_b_opt <- NA
 
   if (parallel) {
-    cores = parallel::detectCores()
+    cores <- parallel::detectCores()
     if(.Platform$OS.type == "unix") {
       # library(doParallel) # needed to parallelize on Linux
-      cl = parallel::makeCluster(cores[1]-1, type = "FORK") # not to overload your computer "FORK"
+      cl <- parallel::makeCluster(cores[1]-1, type = "FORK") # not to overload your computer "FORK"
       doParallel::registerDoParallel(cl)
     }
     else {
       # library(doSNOW) # needed to parallelize on Windows
-      cl = parallel::makeCluster(cores[1]-1, type="SOCK")
+      cl <- parallel::makeCluster(cores[1]-1, type="SOCK")
       doSNOW::registerDoSNOW(cl)
     }
 
     alpha_f_losses <- foreach::foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
-      loss = 0
+      loss <- 0
       for (k in seq_len(n_folds)) {
-        sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[-sel, ]
-        x.test = x[sel, ]
-        beta = FastStepGraph(x.train,
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
                              alpha_f = f,
                              alpha_b = 0.5*f,
                              nei.max = nei.max)$beta
-        loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
-        old_loss = loss/n_folds
-        alpha_f_opt = f
-        alpha_b_opt = 0.5*f
+        old_loss <- loss/n_folds
+        alpha_f_opt <- f
+        alpha_b_opt <- 0.5*f
       }
       old_loss
     }
 
-    indx_min_loss = min(which.min(alpha_f_losses))
-    alpha_f_opt = alpha_f[indx_min_loss]
+    indx_min_loss <- min(which.min(alpha_f_losses))
+    alpha_f_opt <- alpha_f[indx_min_loss]
 
-    alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
+    alpha_b <- c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
-      loss = 0
+      loss <- 0
       for (k in seq_len(n_folds)) {
-        sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[-sel, ]
-        x.test = x[sel, ]
-        beta = FastStepGraph(x.train,
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,
                              nei.max = nei.max)$beta
-        loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
-        old_loss = loss/n_folds
-        alpha_b_opt = b
+        old_loss <- loss/n_folds
+        alpha_b_opt <- b
       }
       old_loss
     }
 
     parallel::stopCluster(cl) #stop cluster
-    indx_min_loss = min(which.min(alpha_b_losses))
-    alpha_b_opt = alpha_b[indx_min_loss]
+    indx_min_loss <- min(which.min(alpha_b_losses))
+    alpha_b_opt <- alpha_b[indx_min_loss]
   }
   else {
     for (i in seq_len(length(alpha_f))) {
-      loss = 0
+      loss <- 0
       for (k in seq_len(n_folds)) {
-        sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[-sel, ]
-        x.test = x[sel, ]
-        beta = FastStepGraph(x.train,
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f[i],
                              alpha_b = 0.5*alpha_f[i],
                              nei.max = nei.max)$beta
-        loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
-        old_loss = loss/n_folds
-        alpha_f_opt = alpha_f[i]
-        alpha_b_opt = 0.5*alpha_f[i]
+        old_loss <- loss/n_folds
+        alpha_f_opt <- alpha_f[i]
+        alpha_b_opt <- 0.5*alpha_f[i]
       }
     }
 
-    alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
+    alpha_b <- c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
     for (b in alpha_b) {
-      loss = 0
+      loss <- 0
       for (k in seq_len(n_folds)) {
-        sel = ((k-1)*ntest+1):(k*ntest)
-        x.train = x[-sel, ]
-        x.test = x[sel, ]
-        beta = FastStepGraph(x.train,
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,
                              nei.max = nei.max)$beta
-        loss = loss + sum(colSums((x.test - x.test%*%beta)^2))
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
-        old_loss = loss/n_folds
-        alpha_b_opt = b
+        old_loss <- loss/n_folds
+        alpha_b_opt <- b
       }
     }
   }

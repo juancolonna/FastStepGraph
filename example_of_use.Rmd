@@ -32,7 +32,7 @@ all.equal(Omega, G$Omega)
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X, data_shuffle = TRUE)
+res = cv.FastStepGraph(X, data_shuffle = FALSE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)
@@ -44,7 +44,7 @@ To run parallel on windows first install.packages("doSNOW"), then import by libr
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res = cv.FastStepGraph(X, parallel = TRUE, data_shuffle = TRUE)
+res = cv.FastStepGraph(X, data_shuffle = FALSE, parallel = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 print(res$alpha_f_opt)

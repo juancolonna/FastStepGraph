@@ -35,6 +35,7 @@
 #'
 #' @export
 FastStepGraph = function(x, alpha_f, alpha_b=0, nei.max=5, data_scale=FALSE, max.iterations=NULL){
+  .lm.fit = combn = cor = cov = NULL
   if (data_scale) { x = scale(x) }
   n = dim(x)[1] # number of rows
   p = dim(x)[2] # number of columns

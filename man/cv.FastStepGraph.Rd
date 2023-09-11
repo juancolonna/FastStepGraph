@@ -12,7 +12,7 @@ cv.FastStepGraph(
   n_alpha = 32,
   nei.max = 5,
   data_scale = FALSE,
-  data_shuffle = FALSE,
+  data_shuffle = TRUE,
   parallel = FALSE
 )
 }
@@ -31,7 +31,7 @@ cv.FastStepGraph(
 
 \item{data_scale}{Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).}
 
-\item{data_shuffle}{Boolean parameter (TRUE or FALSE), when samples (rows of X) must be randomly shuffled.}
+\item{data_shuffle}{Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.}
 
 \item{parallel}{Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).}
 }
@@ -51,16 +51,16 @@ A list with the values: \cr \cr
 \examples{
 library(FastStepGraph)
 library(MASS) # mvrnorm
-phi = 0.4
-p = 100  # Dimension
-n = 100 # Sample size
-Sigma = SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
-Omega = solve(Sigma)
-Omega[abs(Omega) < 1e-5] = 0
-X = list() # Generate Data from a Gaussian distribution
-X = mvrnorm(n, mu=rep(0,p), Sigma)
-X = scale(X)
-res = cv.FastStepGraph(X)
+phi <- 0.4
+p <- 100  # Dimension
+n <- 100 # Sample size
+Sigma <- SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
+Omega <- solve(Sigma)
+Omega[abs(Omega) < 1e-5] <- 0
+X <- list() # Generate Data from a Gaussian distribution
+X <- mvrnorm(n, mu=rep(0,p), Sigma)
+X <- scale(X)
+res <- cv.FastStepGraph(X)
 print(res$alpha_f_opt)
 print(res$alpha_b_opt)
 
