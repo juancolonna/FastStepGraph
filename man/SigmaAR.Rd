@@ -28,7 +28,7 @@ Sigma = SigmaAR(p, phi) # Simulate Gaussian Data with Autoregressive (AR) Model
 Omega = solve(Sigma)
 Omega[abs(Omega) < 1e-5] = 0
 X = list() # Generate Data from a Gaussian distribution
-X = mvrnorm(n, mu=rep(0,p), Sigma)
+X = MASS::mvrnorm(n, mu=rep(0,p), Sigma)
 X = scale(X)
 
 }

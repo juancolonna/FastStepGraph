@@ -3,4 +3,5 @@
 export(FastStepGraph)
 export(SigmaAR)
 export(cv.FastStepGraph)
+importFrom(MASS,mvrnorm)
 importFrom(foreach,"%dopar%")

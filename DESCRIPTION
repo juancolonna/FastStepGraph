@@ -7,11 +7,13 @@ Maintainer: Juan G. Colonna <juancolonna@icomp.ufam.edu.br>
 Description: It implements an improved and computationally faster version of the original Stepwise Gaussian Graphical Algorithm for estimating the Omega precision matrix from high-dimensional data.
 License: MIT + file LICENSE
 Encoding: UTF-8
+Depends:
+  R (>= 4.3),
+  MASS (>= 7.3),
 Imports:
-  doSNOW (>= 1.0.20),
-  doParallel (>= 1.0.17),
-  foreach (>= 1.5.2),
-  MASS (>= 7.3-60)
+  doSNOW (>= 1.0),
+  doParallel (>= 1.0),
+  foreach (>= 1.5),
 RoxygenNote: 7.2.3
 Suggests: 
     knitr,

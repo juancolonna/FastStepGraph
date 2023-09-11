@@ -8,6 +8,8 @@
 #' @return A list with the values:
 #' \item{\code{Sigma}}{A covariance matrix.}
 #'
+#' @importFrom MASS mvrnorm
+#' 
 #' @examples
 #' library(FastStepGraph)
 #' library(MASS) # mvrnorm
@@ -18,7 +20,7 @@
 #' Omega = solve(Sigma)
 #' Omega[abs(Omega) < 1e-5] = 0
 #' X = list() # Generate Data from a Gaussian distribution
-#' X = mvrnorm(n, mu=rep(0,p), Sigma)
+#' X = MASS::mvrnorm(n, mu=rep(0,p), Sigma)
 #' X = scale(X)
 #'
 #' @author Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}
