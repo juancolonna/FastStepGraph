@@ -42,16 +42,16 @@
 #'
 #' @export
 #' @importFrom foreach %dopar%
-cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, data_shuffle = FALSE, parallel = FALSE){
-  n = nrow(x)
-  p = ncol(x)
+cv.FastStepGraph <- function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9, n_alpha = 32, nei.max = 5, data_scale = FALSE, data_shuffle = FALSE, parallel = FALSE){
+  n <- nrow(x)
+  p <- ncol(x)
 
   if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
   if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x = scale(x) }
-  if (data_shuffle) { x = x[sample(1:n),] }
+  if (data_shuffle) { x = x[sample(seq_len(n)),] }
 
   ntest = floor(n/n_folds)
   ntrain = n - ntest
@@ -77,7 +77,7 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
 
     alpha_f_losses <- foreach::foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
       loss = 0
-      for (k in 1:n_folds) {
+      for (k in seq_len(n_folds)) {
         sel = ((k-1)*ntest+1):(k*ntest)
         x.train = x[-sel, ]
         x.test = x[sel, ]
@@ -101,7 +101,7 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
     alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
       loss = 0
-      for (k in 1:n_folds) {
+      for (k in seq_len(n_folds)) {
         sel = ((k-1)*ntest+1):(k*ntest)
         x.train = x[-sel, ]
         x.test = x[sel, ]
@@ -123,9 +123,9 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
     alpha_b_opt = alpha_b[indx_min_loss]
   }
   else {
-    for (i in 1:length(alpha_f)) {
+    for (i in seq_len(length(alpha_f))) {
       loss = 0
-      for (k in 1:n_folds) {
+      for (k in seq_len(n_folds)) {
         sel = ((k-1)*ntest+1):(k*ntest)
         x.train = x[-sel, ]
         x.test = x[sel, ]
@@ -145,7 +145,7 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
     alpha_b = c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
     for (b in alpha_b) {
       loss = 0
-      for (k in 1:n_folds) {
+      for (k in seq_len(n_folds)) {
         sel = ((k-1)*ntest+1):(k*ntest)
         x.train = x[-sel, ]
         x.test = x[sel, ]
@@ -162,7 +162,7 @@ cv.FastStepGraph = function(x, n_folds = 5, alpha_f_min = 0.1, alpha_f_max = 0.9
     }
   }
 
-  G = FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
+  G <- FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
   return(list(alpha_f_opt = alpha_f_opt,
               alpha_b_opt = alpha_b_opt,
               CV.loss = old_loss,

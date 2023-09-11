@@ -45,7 +45,7 @@ FastStepGraph = function(x, alpha_f, alpha_b=0, nei.max=5, data_scale=FALSE, max
   if (nei.max == 0 && n <= p){nei.max = n-1 }
   if (nei.max == 0 && p < n){nei.max = p }
 
-  Edges_I = t(combn(1:p,2)) # Inactive set of ordered pair (i,j)
+  Edges_I = t(combn(seq_len(p),2)) # Inactive set of ordered pair (i,j)
   Edges_A = t(matrix(0,2,dim(Edges_I)[1])) # Active set of ordered pair (i,j)
   N_neighbors = integer(p) # number of neighbors of each node
 

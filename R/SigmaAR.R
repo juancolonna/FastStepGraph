@@ -27,11 +27,11 @@
 #' @author Prof. Marcelo Ruiz, PhD. \email{mruiz@exa.unrc.edu.ar}
 #'
 #' @export
-SigmaAR = function(p, phi){
-    Sigma = diag(p)
-    for (i in 1:p) {
-        for (j in 1:p) {
-            Sigma[i,j] = phi^(abs(i-j))
+SigmaAR <- function(p, phi){
+    Sigma <- diag(p)
+    for (i in seq_len(p)) {
+        for (j in seq_len(p)) {
+            Sigma[i,j] <- phi^(abs(i-j))
         }
     }
     return(Sigma)
