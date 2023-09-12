@@ -7,8 +7,6 @@ Authors@R: c(
            comment = c(ORCID = "https://orcid.org/0000-0002-1740-2618")),
     person("Marcelo", "Ruiz", , "mruiz@exa.unrc.edu.ar ", role = "aut")
   )
-Author: Juan G. Colonna <https://orcid.org/0000-0002-1740-2618>; S.
-    Marcelo Ruiz
 Maintainer: Juan G. Colonna <juancolonna@icomp.ufam.edu.br>
 Description: It implements an improved and computationally faster version
     of the original Stepwise Gaussian Graphical Algorithm for estimating

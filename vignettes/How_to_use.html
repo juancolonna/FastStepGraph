@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>How to use FasStepGraph</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">How to use FasStepGraph</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(FastStepGraph)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(MASS)     <span class="co"># mvrnorm</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># If you directly cloned the github repository, then you should uncomment these lines to load the functions:</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># source(&#39;FastStepGraph.R&#39;)</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># source(&#39;SigmaAR.R&#39;)</span></span></code></pre></div>
+<p>Simulate Gaussian Data with an Autoregressive (AR) Model:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234567</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>phi <span class="ot">=</span> <span class="fl">0.4</span> </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>p <span class="ot">=</span> <span class="dv">100</span>  <span class="co"># number of variables (dimension)</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>n <span class="ot">=</span> <span class="dv">50</span> <span class="co"># number of samples</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>Sigma <span class="ot">=</span> <span class="fu">SigmaAR</span>(p, phi)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>Omega <span class="ot">=</span> <span class="fu">solve</span>(Sigma)  </span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>Omega[<span class="fu">abs</span>(Omega) <span class="sc">&lt;</span> <span class="fl">1e-5</span>] <span class="ot">=</span> <span class="dv">0</span>  </span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co"># Generate Data from a Gaussian distribution </span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>X <span class="ot">=</span> MASS<span class="sc">::</span><span class="fu">mvrnorm</span>(n, <span class="at">mu=</span><span class="fu">rep</span>(<span class="dv">0</span>,p), Sigma)</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>X <span class="ot">=</span> <span class="fu">scale</span>(X) <span class="co"># data normalization to zero mean and unit variance </span></span></code></pre></div>
+<p>Afterwards, fit the Omega matrix by calling the Fast Step Graph
+function, like:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>G <span class="ot">=</span> <span class="fu">FastStepGraph</span>(X, <span class="at">alpha_f =</span> <span class="fl">0.22</span>, <span class="at">alpha_b =</span> <span class="fl">0.14</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 0.4103775 secs</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># print(G$Omega)</span></span></code></pre></div>
+<p>If the <code>nei.max</code> argument is omitted, it will be 5. If you
+don’t know the <code>alpha_f</code> and <code>alpha_b</code> values, the
+use cross-validation. To find the optimal <span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span> parameters for the
+previously generated <strong>X</strong> data, we can perform a
+cross-validation on a combination grid as follows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">cv.FastStepGraph</span>(X, <span class="at">data_shuffle =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 20.81066 secs</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">print</span>(res<span class="sc">$</span>alpha_f_opt)</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#&gt; [1] 0.6935484</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">print</span>(res<span class="sc">$</span>alpha_b_opt)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; [1] 0.3467742</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">print</span>(res<span class="sc">$</span>Omega)</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt;        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13] [,14] [,15] [,16] [,17] [,18] [,19] [,20]</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt;   [1,]    1    0    0    0    0    0    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt;   [2,]    0    1    0    0    0    0    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt;   [3,]    0    0    1    0    0    0    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt;   [4,]    0    0    0    1    0    0    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt;   [5,]    0    0    0    0    1    0    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;   [6,]    0    0    0    0    0    1    0    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;   [7,]    0    0    0    0    0    0    1    0    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt;   [8,]    0    0    0    0    0    0    0    1    0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt;   [9,]    0    0    0    0    0    0    0    0    1     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="co">#&gt;  [10,]    0    0    0    0    0    0    0    0    0     1     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co">#&gt;        [,21] [,22] [,23] [,24] [,25] [,26] [,27] [,28] [,29] [,30] [,31] [,32] [,33] [,34] [,35] [,36] [,37] [,38] [,39]</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="co">#&gt;   [1,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="co">#&gt;   [2,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt;   [3,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-26"><a href="#cb4-26" tabindex="-1"></a><span class="co">#&gt;   [4,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-27"><a href="#cb4-27" tabindex="-1"></a><span class="co">#&gt;   [5,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-28"><a href="#cb4-28" tabindex="-1"></a><span class="co">#&gt;   [6,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-29"><a href="#cb4-29" tabindex="-1"></a><span class="co">#&gt;   [7,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-30"><a href="#cb4-30" tabindex="-1"></a><span class="co">#&gt;   [8,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-31"><a href="#cb4-31" tabindex="-1"></a><span class="co">#&gt;   [9,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-32"><a href="#cb4-32" tabindex="-1"></a><span class="co">#&gt;  [10,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-33"><a href="#cb4-33" tabindex="-1"></a><span class="co">#&gt;        [,40] [,41] [,42] [,43] [,44] [,45] [,46] [,47] [,48] [,49] [,50] [,51] [,52] [,53] [,54] [,55] [,56] [,57] [,58]</span></span>
+<span id="cb4-34"><a href="#cb4-34" tabindex="-1"></a><span class="co">#&gt;   [1,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-35"><a href="#cb4-35" tabindex="-1"></a><span class="co">#&gt;   [2,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-36"><a href="#cb4-36" tabindex="-1"></a><span class="co">#&gt;   [3,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-37"><a href="#cb4-37" tabindex="-1"></a><span class="co">#&gt;   [4,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-38"><a href="#cb4-38" tabindex="-1"></a><span class="co">#&gt;   [5,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-39"><a href="#cb4-39" tabindex="-1"></a><span class="co">#&gt;   [6,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-40"><a href="#cb4-40" tabindex="-1"></a><span class="co">#&gt;   [7,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-41"><a href="#cb4-41" tabindex="-1"></a><span class="co">#&gt;   [8,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-42"><a href="#cb4-42" tabindex="-1"></a><span class="co">#&gt;   [9,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-43"><a href="#cb4-43" tabindex="-1"></a><span class="co">#&gt;  [10,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-44"><a href="#cb4-44" tabindex="-1"></a><span class="co">#&gt;        [,59] [,60] [,61] [,62] [,63] [,64] [,65] [,66] [,67] [,68] [,69] [,70] [,71] [,72] [,73] [,74] [,75] [,76] [,77]</span></span>
+<span id="cb4-45"><a href="#cb4-45" tabindex="-1"></a><span class="co">#&gt;   [1,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-46"><a href="#cb4-46" tabindex="-1"></a><span class="co">#&gt;   [2,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-47"><a href="#cb4-47" tabindex="-1"></a><span class="co">#&gt;   [3,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-48"><a href="#cb4-48" tabindex="-1"></a><span class="co">#&gt;   [4,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-49"><a href="#cb4-49" tabindex="-1"></a><span class="co">#&gt;   [5,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-50"><a href="#cb4-50" tabindex="-1"></a><span class="co">#&gt;   [6,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-51"><a href="#cb4-51" tabindex="-1"></a><span class="co">#&gt;   [7,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-52"><a href="#cb4-52" tabindex="-1"></a><span class="co">#&gt;   [8,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-53"><a href="#cb4-53" tabindex="-1"></a><span class="co">#&gt;   [9,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-54"><a href="#cb4-54" tabindex="-1"></a><span class="co">#&gt;  [10,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-55"><a href="#cb4-55" tabindex="-1"></a><span class="co">#&gt;        [,78] [,79] [,80] [,81] [,82] [,83] [,84] [,85] [,86] [,87] [,88] [,89] [,90] [,91] [,92] [,93] [,94] [,95] [,96]</span></span>
+<span id="cb4-56"><a href="#cb4-56" tabindex="-1"></a><span class="co">#&gt;   [1,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-57"><a href="#cb4-57" tabindex="-1"></a><span class="co">#&gt;   [2,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-58"><a href="#cb4-58" tabindex="-1"></a><span class="co">#&gt;   [3,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-59"><a href="#cb4-59" tabindex="-1"></a><span class="co">#&gt;   [4,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-60"><a href="#cb4-60" tabindex="-1"></a><span class="co">#&gt;   [5,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-61"><a href="#cb4-61" tabindex="-1"></a><span class="co">#&gt;   [6,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-62"><a href="#cb4-62" tabindex="-1"></a><span class="co">#&gt;   [7,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-63"><a href="#cb4-63" tabindex="-1"></a><span class="co">#&gt;   [8,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-64"><a href="#cb4-64" tabindex="-1"></a><span class="co">#&gt;   [9,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-65"><a href="#cb4-65" tabindex="-1"></a><span class="co">#&gt;  [10,]     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0     0</span></span>
+<span id="cb4-66"><a href="#cb4-66" tabindex="-1"></a><span class="co">#&gt;        [,97] [,98] [,99] [,100]</span></span>
+<span id="cb4-67"><a href="#cb4-67" tabindex="-1"></a><span class="co">#&gt;   [1,]     0     0     0      0</span></span>
+<span id="cb4-68"><a href="#cb4-68" tabindex="-1"></a><span class="co">#&gt;   [2,]     0     0     0      0</span></span>
+<span id="cb4-69"><a href="#cb4-69" tabindex="-1"></a><span class="co">#&gt;   [3,]     0     0     0      0</span></span>
+<span id="cb4-70"><a href="#cb4-70" tabindex="-1"></a><span class="co">#&gt;   [4,]     0     0     0      0</span></span>
+<span id="cb4-71"><a href="#cb4-71" tabindex="-1"></a><span class="co">#&gt;   [5,]     0     0     0      0</span></span>
+<span id="cb4-72"><a href="#cb4-72" tabindex="-1"></a><span class="co">#&gt;   [6,]     0     0     0      0</span></span>
+<span id="cb4-73"><a href="#cb4-73" tabindex="-1"></a><span class="co">#&gt;   [7,]     0     0     0      0</span></span>
+<span id="cb4-74"><a href="#cb4-74" tabindex="-1"></a><span class="co">#&gt;   [8,]     0     0     0      0</span></span>
+<span id="cb4-75"><a href="#cb4-75" tabindex="-1"></a><span class="co">#&gt;   [9,]     0     0     0      0</span></span>
+<span id="cb4-76"><a href="#cb4-76" tabindex="-1"></a><span class="co">#&gt;  [10,]     0     0     0      0</span></span>
+<span id="cb4-77"><a href="#cb4-77" tabindex="-1"></a><span class="co">#&gt;  [ reached getOption(&quot;max.print&quot;) -- omitted 90 rows ]</span></span></code></pre></div>
+<p>The arguments <code>n_folds = 5</code>,
+<code>alpha_f_min = 0.1</code>, <code>alpha_f_max = 0.9</code>,
+<code>n_alpha = 32</code> (size of the grid search) and
+<code>nei.max = 5</code>, have defaults values and can be omitted. Note
+that, <code>cv.FastStepGraph(X)</code> is not an exhaustive grid search
+over <span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span>. This is a heuristic
+that always sets <span class="math inline">\(\mathbf{\alpha_b}\)</span>
+= <span class="math inline">\(\frac{\mathbf{\alpha_f}}{2}\)</span>. It
+is recommended to shuffle the rows of <code>X</code> before running
+cross-validation. The default value is <code>data_shuffle = TRUE</code>,
+but if you want to disable row shuffle, set it to
+<code>data_shuffle = FALSE</code>.</p>
+<p>To increase time performance, you can run
+<code>cv.FastStepGraph(X, parallel = TRUE)</code> in parallel. Before,
+you’ll need to install and register a parallel backend. Since Windows
+does not support forking, the same backend that works in a Linux or OS X
+environment will not work in Windows. To run on a Linux system the
+<strong>doParallel</strong> dependency must be installed
+<code>install.packages(&quot;doParallel&quot;)</code>. To run on a Windows system,
+<strong>doSNOW</strong> is used <code>install.packages(&quot;doSNOW&quot;)</code>.
+These parallel packages will also require the following dependencies:
+<strong>foreach</strong>, <strong>iterators</strong> and
+<strong>parallel</strong>. Make sure you satisfy them. Then call the
+method setting the parameter <strong>parallel = TRUE</strong>, as
+follows:
+<code>res = cv.FastStepGraph(X, data_shuffle = FALSE, parallel = FALSE)</code>.</p>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
