@@ -1,6 +1,6 @@
 Type: Package
 Package: FastStepGraph
-Title: FastStepGraph: Fast Sparse Precision Matrix Estimation
+Title: Fast Step Graph: A Fast Sparse Precision Matrix Estimation Algorithm
 Version: 0.1.0
 Authors@R: c(
     person("Juan G.", "Colonna", , "juancolonna@icomp.ufam.edu.br", role = c("cre", "aut"),

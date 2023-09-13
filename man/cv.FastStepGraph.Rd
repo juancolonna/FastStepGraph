@@ -13,7 +13,8 @@ cv.FastStepGraph(
   nei.max = 5,
   data_scale = FALSE,
   data_shuffle = TRUE,
-  parallel = FALSE
+  parallel = FALSE,
+  n_cores = NULL
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ cv.FastStepGraph(
 \item{data_shuffle}{Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.}
 
 \item{parallel}{Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).}
+
+\item{n_cores}{An 'int' value specifying the number of cores do you want to use if 'parallel=TRUE'. 
+If n_cores is not specified, the maximum number of cores on your machine minus one will be set automatically.}
 }
 \value{
 A list with the values: \cr \cr

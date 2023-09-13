@@ -11,7 +11,9 @@
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #' @param data_shuffle Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
-#'
+#' @param n_cores An 'int' value specifying the number of cores do you want to use if 'parallel=TRUE'. 
+#' If n_cores is not specified, the maximum number of cores on your machine minus one will be set automatically.
+#' 
 #' @return A list with the values: \cr \cr
 #' \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
 #' \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
@@ -49,7 +51,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
                              nei.max = 5, 
                              data_scale = FALSE, 
                              data_shuffle = TRUE, 
-                             parallel = FALSE){
+                             parallel = FALSE,
+                             n_cores = NULL){
   f <- NULL
   n <- nrow(x)
   p <- ncol(x)
@@ -71,15 +74,13 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   alpha_b_opt <- NA
 
   if (parallel) {
-    cores <- parallel::detectCores()
+    if (is.null(n_cores)) { n_cores <- parallel::detectCores() }
     if(.Platform$OS.type == "unix") {
-      # library(doParallel) # needed to parallelize on Linux
-      cl <- parallel::makeCluster(cores[1]-1, type = "FORK") # not to overload your computer "FORK"
+      cl <- parallel::makeCluster(n_cores[1]-1, type = "FORK") # not to overload your computer "FORK"
       doParallel::registerDoParallel(cl)
     }
     else {
-      # library(doSNOW) # needed to parallelize on Windows
-      cl <- parallel::makeCluster(cores[1]-1, type="SOCK")
+      cl <- parallel::makeCluster(n_cores[1]-1, type="SOCK")
       doSNOW::registerDoSNOW(cl)
     }
 

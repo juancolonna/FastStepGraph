@@ -1,8 +1,16 @@
 ---
-title: "How to use FasStepGraph"
-output: rmarkdown::html_vignette
+title: "How to use Fast Step Graph"
+author: 
+  - Juan G. Colonna
+  - Marcelo Ruiz
+#output: rmarkdown::html_vignette
+output:
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
 vignette: >
-  %\VignetteIndexEntry{How_to_use}
+  %\VignetteIndexEntry{How to use Fast Step Graph}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,14 +20,23 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-options(rmarkdown.html_vignette.check_title = FALSE)
 ```
 
+To install the last version of this package directly from GitHub run: 
+
 ```{r setup}
+# use "quiet = FALSE" if you want to see the outputs of this command
+devtools::install_github("juancolonna/FastStepGraph", quiet = TRUE, force = TRUE)
+```
+
+Then:
+
+```{r}
 library(FastStepGraph)
 library(MASS)     # mvrnorm
 
-# If you directly cloned the github repository, then you should uncomment these lines to load the functions:
+# If you directly cloned the github repository, 
+# then you should uncomment these lines to load the functions:
 # source('FastStepGraph.R')
 # source('SigmaAR.R')
 ```
@@ -65,14 +82,16 @@ print(res$alpha_b_opt)
 
 The arguments `n_folds = 5`, `alpha_f_min = 0.1`, `alpha_f_max = 0.9`, `n_alpha = 32` (size of the grid search) and `nei.max = 5`, have defaults values and can be omitted. Note that, `cv.FastStepGraph(X)` is not an exhaustive grid search over $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$. It is recommended to shuffle the rows of `X` before running cross-validation. The default value is `data_shuffle = TRUE`, but if you want to disable row shuffle, set it to `data_shuffle = FALSE`.
 
-To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)` in parallel. Before, you'll need to install and register a parallel backend. Since Windows does not support forking, the same backend that works in a Linux or OS X environment will not work in Windows. To run on a Linux system the **doParallel** dependency must be installed `install.packages("doParallel")`. To run on a Windows system, **doSNOW** is used `install.packages("doSNOW")`. These parallel packages will also require the following dependencies: **foreach**, **iterators** and **parallel**. Make sure you satisfy them. Then call the method setting the parameter **parallel = TRUE**, as follows: `res = cv.FastStepGraph(X, data_shuffle = FALSE, parallel = FALSE)`.
+To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)` in parallel. Before, you'll need to install and register a parallel backend. Since Windows does not support forking, the same backend that works in a Linux or OS X environment will not work in Windows. To run on a Linux system the **doParallel** dependency must be installed `install.packages("doParallel")`. To run on a Windows system, **doSNOW** is used `install.packages("doSNOW")`. These parallel packages will also require the following dependencies: **foreach**, **iterators** and **parallel**. Make sure you satisfy them. Then, call the method setting the parameter **parallel = TRUE**, as follows: 
+
 
 ```{r}
-# t0 <- Sys.time() # INITIAL TIME
-# res <- cv.FastStepGraph(X, parallel = TRUE)
-# difftime(Sys.time(), t0, units = "secs")
+t0 <- Sys.time() # INITIAL TIME
+# use 'n_cores = NULL' to set the maximum number of cores on your machine minus one
+res <- cv.FastStepGraph(X, parallel = TRUE, n_cores = 2)
+difftime(Sys.time(), t0, units = "secs")
 
-# print(res$alpha_f_opt)
-# print(res$alpha_b_opt)
+print(res$alpha_f_opt)
+print(res$alpha_b_opt)
 # print(res$Omega)
 ```
