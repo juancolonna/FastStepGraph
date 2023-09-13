@@ -25,11 +25,12 @@ knitr::opts_chunk$set(
 To install the last version of this package directly from GitHub run: 
 
 ```{r setup}
+library(devtools)
 # use "quiet = FALSE" if you want to see the outputs of this command
 devtools::install_github("juancolonna/FastStepGraph", quiet = TRUE, force = TRUE)
 ```
 
-Then:
+Then, load with:
 
 ```{r}
 library(FastStepGraph)

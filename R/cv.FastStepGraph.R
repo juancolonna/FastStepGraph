@@ -74,13 +74,13 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   alpha_b_opt <- NA
 
   if (parallel) {
-    if (is.null(n_cores)) { n_cores <- parallel::detectCores() }
+    if (is.null(n_cores)) { n_cores <- parallel::detectCores()-1 }  # -1 to not overload your computer 
     if(.Platform$OS.type == "unix") {
-      cl <- parallel::makeCluster(n_cores[1]-1, type = "FORK") # not to overload your computer "FORK"
+      cl <- parallel::makeCluster(n_cores[1], type = "FORK") # in linux "FORK"
       doParallel::registerDoParallel(cl)
     }
     else {
-      cl <- parallel::makeCluster(n_cores[1]-1, type="SOCK")
+      cl <- parallel::makeCluster(n_cores[1], type="SOCK") # in windows "SOCK"
       doSNOW::registerDoSNOW(cl)
     }
 

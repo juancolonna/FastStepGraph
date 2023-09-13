@@ -22,7 +22,8 @@ Imports:
     MASS (>= 7.3)
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    devtools
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
