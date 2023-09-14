@@ -12,4 +12,5 @@ Clone this repository or simply download the .zip file and follow the instructio
 
 How to cite this repo?
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8341363.svg)](https://doi.org/10.5281/zenodo.8341363)
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8233706.svg)](https://doi.org/10.5281/zenodo.8233706)

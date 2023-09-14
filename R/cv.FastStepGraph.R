@@ -23,27 +23,15 @@
 #' \item{\code{Edges}}{Estimated set of edges.}
 #' \item{\code{Omega}}{Estimated precision matrix.}
 #'
-#' @examples
-#' library(FastStepGraph)
-#' library(MASS) # mvrnorm
-#' phi <- 0.4
-#' p <- 100  # Dimension
-#' n <- 100 # Sample size
-#' Sigma <- SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
-#' Omega <- solve(Sigma)
-#' Omega[abs(Omega) < 1e-5] <- 0
-#' X <- list() # Generate Data from a Gaussian distribution
-#' X <- mvrnorm(n, mu=rep(0,p), Sigma)
-#' X <- scale(X)
-#' res <- cv.FastStepGraph(X)
-#' print(res$alpha_f_opt)
-#' print(res$alpha_b_opt)
-#'
 #' @author Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}
 #' @author Prof. Marcelo Ruiz, PhD. \email{mruiz@exa.unrc.edu.ar}
 #'
 #' @export
 #' @importFrom foreach %dopar%
+#' 
+#' @examples
+#' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
+#' res <- FastStepGraph::cv.FastStepGraph(data$X)
 cv.FastStepGraph <- function(x, n_folds = 5, 
                              alpha_f_min = 0.1, 
                              alpha_f_max = 0.9, 

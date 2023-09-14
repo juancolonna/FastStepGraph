@@ -37,20 +37,8 @@ A list with the values:
 Improved and faster implementation of the Stepwise Gaussian Graphical Algorithm.
 }
 \examples{
-library(FastStepGraph)
-library(MASS) # mvrnorm
-phi <- 0.4
-p <- 100  # Dimension
-n <- 100 # Sample size
-Sigma <- SigmaAR(p, phi) # Simulate Gaussian Data with an Autoregressive (AR) Model
-Omega <- solve(Sigma)
-Omega[abs(Omega) < 1e-5] <- 0
-X <- list() # Generate Data from a Gaussian distribution
-X <- mvrnorm(n, mu=rep(0,p), Sigma)
-X <- scale(X)
-G <- FastStepGraph(X, alpha_f = 0.22, alpha_b = 0.14)
-print(G$Omega)
-
+data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
+G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
 }
 \author{
 Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}

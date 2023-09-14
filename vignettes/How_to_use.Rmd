@@ -3,12 +3,9 @@ title: "How to use Fast Step Graph"
 author: 
   - Juan G. Colonna
   - Marcelo Ruiz
-#output: rmarkdown::html_vignette
-output:
-  pdf_document:
-    fig_caption: yes
-    toc: yes
-    toc_depth: 3
+
+# output: rmarkdown::html_vignette
+# output: pdf_document
 vignette: >
   %\VignetteIndexEntry{How to use Fast Step Graph}
   %\VignetteEngine{knitr::rmarkdown}
@@ -22,19 +19,15 @@ knitr::opts_chunk$set(
 )
 ```
 
-To install the last version of this package directly from GitHub run: 
+To install the last version of this package directly from GitHub uncomment and run: 
 
 ```{r setup}
-library(devtools)
+# library(devtools)
 # use "quiet = FALSE" if you want to see the outputs of this command
-devtools::install_github("juancolonna/FastStepGraph", quiet = TRUE, force = TRUE)
-```
+# devtools::install_github("juancolonna/FastStepGraph", quiet = TRUE, force = TRUE)
 
-Then, load with:
-
-```{r}
+# Then, load it:
 library(FastStepGraph)
-library(MASS)     # mvrnorm
 
 # If you directly cloned the github repository, 
 # then you should uncomment these lines to load the functions:
@@ -47,24 +40,18 @@ Simulate Gaussian Data with an Autoregressive (AR) Model:
 ```{r}
 set.seed(1234567)
 phi <- 0.4 
-p <- 100  # number of variables (dimension)
-n <- 50 # number of samples
-
-Sigma <- SigmaAR(p, phi)
-Omega <- solve(Sigma)  
-Omega[abs(Omega) < 1e-5] <- 0  
+p <- 50  # number of variables (dimension)
+n <- 30 # number of samples
 
 # Generate Data from a Gaussian distribution 
-X <- list()
-X <- MASS::mvrnorm(n, mu=rep(0,p), Sigma)
-X <- scale(X) # data normalization to zero mean and unit variance 
+data <- FastStepGraph::SigmaAR(n, p, phi)
 ```
 
 Afterwards, fit the Omega matrix by calling the Fast Step Graph function, like:
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-G <- FastStepGraph(X, alpha_f = 0.22, alpha_b = 0.14)
+G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
 difftime(Sys.time(), t0, units = "secs")
 # print(G$Omega)
 ```
@@ -73,11 +60,11 @@ If the `nei.max` argument is omitted, it will be 5. If you don't know the `alpha
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res <- cv.FastStepGraph(X, data_shuffle = FALSE)
+res <- FastStepGraph::cv.FastStepGraph(data$X, data_shuffle = FALSE)
 difftime(Sys.time(), t0, units = "secs")
 
-print(res$alpha_f_opt)
-print(res$alpha_b_opt)
+# print(res$alpha_f_opt)
+# print(res$alpha_b_opt)
 # print(res$Omega)
 ```
 
@@ -88,11 +75,11 @@ To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)`
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-# use 'n_cores = NULL' to set the maximum number of cores on your machine minus one
-res <- cv.FastStepGraph(X, parallel = TRUE, n_cores = 2)
+# use 'n_cores = NULL' to set the maximum number of cores minus one on your machine 
+res <- FastStepGraph::cv.FastStepGraph(data$X, parallel = TRUE, n_cores = 2)
 difftime(Sys.time(), t0, units = "secs")
 
-print(res$alpha_f_opt)
-print(res$alpha_b_opt)
+# print(res$alpha_f_opt)
+# print(res$alpha_b_opt)
 # print(res$Omega)
 ```

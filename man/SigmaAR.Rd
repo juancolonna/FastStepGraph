@@ -4,33 +4,26 @@
 \alias{SigmaAR}
 \title{Simulate Covariance Matrix with an Auto-regressive (AR) Model}
 \usage{
-SigmaAR(p, phi)
+SigmaAR(n_rows, p_columns, phi)
 }
 \arguments{
-\item{p}{Number of variables (rows x columns).}
+\item{n_rows}{Number of samples (rows of X).}
+
+\item{p_columns}{Number of variables (columns of X).}
 
 \item{phi}{Auto-regression coefficient.}
 }
 \value{
 A list with the values:
 \item{\code{Sigma}}{A covariance matrix.}
+\item{\code{Omega}}{A precision matrix.}
+\item{\code{X}}{A normalized data matrix with Gaussian distribution.}
 }
 \description{
 Helper function to simulate Simulate Gaussian Data with an Autoregressive (AR) Model
 }
 \examples{
-library(FastStepGraph)
-library(MASS) # mvrnorm
-phi <- 0.4
-p <- 100  # Dimension
-n <- 100 # Sample size
-Sigma <- SigmaAR(p, phi) # Simulate Gaussian Data with Autoregressive (AR) Model
-Omega <- solve(Sigma)
-Omega[abs(Omega) < 1e-5] <- 0
-X <- list() # Generate Data from a Gaussian distribution
-X <- MASS::mvrnorm(n, mu=rep(0,p), Sigma)
-X <- scale(X)
-
+data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
 }
 \author{
 Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}

@@ -1,6 +1,7 @@
 Type: Package
 Package: FastStepGraph
-Title: Fast Step Graph: A Fast Sparse Precision Matrix Estimation Algorithm
+Title: Fast Step Graph: A Fast Sparse Precision Matrix Estimation
+        Algorithm
 Version: 0.1.0
 Authors@R: c(
     person("Juan G.", "Colonna", , "juancolonna@icomp.ufam.edu.br", role = c("cre", "aut"),
@@ -13,19 +14,15 @@ Description: It implements an improved and computationally faster version
     the Omega precision matrix from high-dimensional data.
 License: MIT + file LICENSE
 URL: https://github.com/juancolonna/FastStepGraph
-Depends:
-    R (>= 4.3),
-Imports:
-    doParallel (>= 1.0),
-    doSNOW (>= 1.0),
-    foreach (>= 1.5),
-    MASS (>= 7.3)
-Suggests: 
-    knitr,
-    rmarkdown,
-    devtools
-VignetteBuilder: 
-    knitr
+Depends: R (>= 4.3),
+Imports: doParallel (>= 1.0), doSNOW (>= 1.0), foreach (>= 1.5), MASS
+        (>= 7.3)
+Suggests: knitr, rmarkdown, devtools
+VignetteBuilder: knitr
 Encoding: UTF-8
 Language: en-US
 RoxygenNote: 7.2.3
+NeedsCompilation: no
+Packaged: 2023-09-13 14:06:14 UTC; juan
+Author: Juan G. Colonna [cre, aut] (<https://orcid.org/0000-0002-1740-2618>),
+  Marcelo Ruiz [aut]
