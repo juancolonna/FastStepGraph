@@ -8,9 +8,8 @@ This implementation builds upon the original code available at [link](https://jd
 
 Despite these enhancements, the primary bottleneck of Fast Step Graph lies in the requirement of substantial memory resources $\text{Memory} \propto \Big(\frac{p(p-1)}{2}\Big)$ for storing the entire graph, particularly when $p$ grows.
 
-Clone this repository or simply download the .zip file and follow the instructions in [this link to see an example](vignettes/How_to_use.pdf).
+Clone this repository or simply download the .zip file and follow the instructions in [this link to see an example](https://github.com/juancolonna/FastStepGraph/blob/main/vignettes/How_to_use.pdf).
 
 How to cite this repo?
-
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8233706.svg)](https://doi.org/10.5281/zenodo.8233706)

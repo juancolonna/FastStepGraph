@@ -4,9 +4,9 @@ Title: Fast Step Graph: A Fast Sparse Precision Matrix Estimation
         Algorithm
 Version: 0.1.0
 Authors@R: c(
-    person("Juan G.", "Colonna", , "juancolonna@icomp.ufam.edu.br", role = c("cre", "aut"),
+    person("Juan G.", "Colonna", role = c("cre", "aut"), email = "juancolonna@icomp.ufam.edu.br",
            comment = c(ORCID = "https://orcid.org/0000-0002-1740-2618")),
-    person("Marcelo", "Ruiz", , "mruiz@exa.unrc.edu.ar ", role = "aut")
+    person("Marcelo", "Ruiz", role = c("aut"), email = "mruiz@exa.unrc.edu.ar")
   )
 Maintainer: Juan G. Colonna <juancolonna@icomp.ufam.edu.br>
 Description: It implements an improved and computationally faster version

@@ -339,8 +339,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 <h1 class="title toc-ignore">How to use Fast Step Graph</h1>
-<h4 class="author">Juan G. Colonna</h4>
-<h4 class="author">Marcelo Ruiz</h4>
+<h4 class="author">Juan G. Colonna<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></h4>
+<h4 class="author">Marcelo Ruiz<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></h4>
 
 
 
@@ -370,7 +370,7 @@ function, like:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>G <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">FastStepGraph</span>(data<span class="sc">$</span>X, <span class="at">alpha_f =</span> <span class="fl">0.22</span>, <span class="at">alpha_b =</span> <span class="fl">0.14</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 0.06526613 secs</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 0.06962848 secs</span></span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># print(G$Omega)</span></span></code></pre></div>
 <p>If the <code>nei.max</code> argument is omitted, it will be 5. If you
 don’t know the <code>alpha_f</code> and <code>alpha_b</code> values, the
@@ -380,7 +380,7 @@ cross-validation on a combination grid as follows:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>res <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">cv.FastStepGraph</span>(data<span class="sc">$</span>X, <span class="at">data_shuffle =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 3.786839 secs</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 3.808506 secs</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
 <span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># print(res$alpha_f_opt)</span></span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># print(res$alpha_b_opt)</span></span>
@@ -414,11 +414,20 @@ follows:</p>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="co"># use &#39;n_cores = NULL&#39; to set the maximum number of cores minus one on your machine </span></span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>res <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">cv.FastStepGraph</span>(data<span class="sc">$</span>X, <span class="at">parallel =</span> <span class="cn">TRUE</span>, <span class="at">n_cores =</span> <span class="dv">2</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Time difference of 2.136065 secs</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; Time difference of 2.026429 secs</span></span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># print(res$alpha_f_opt)</span></span>
 <span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># print(res$alpha_b_opt)</span></span>
 <span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># print(res$Omega)</span></span></code></pre></div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Institute of Computing. Federal University of Amazonas.
+Brasil. <a href="mailto:juancolonna@icomp.ufam.edu.br" class="email">juancolonna@icomp.ufam.edu.br</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Mathematics Department. National University of Río
+Cuarto. Argentina. <a href="mailto:mruiz@exa.unrc.edu.ar" class="email">mruiz@exa.unrc.edu.ar</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
 
 
 
