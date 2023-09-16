@@ -73,7 +73,7 @@ The arguments `n_folds = 5`, `alpha_f_min = 0.1`, `alpha_f_max = 0.9`, `n_alpha 
 To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)` in parallel. Before, you'll need to install and register a parallel backend. Since Windows does not support forking, the same backend that works in a Linux or OS X environment will not work in Windows. To run on a Linux system the **doParallel** dependency must be installed `install.packages("doParallel")`. To run on a Windows system, **doSNOW** is used `install.packages("doSNOW")`. These parallel packages will also require the following dependencies: **foreach**, **iterators** and **parallel**. Make sure you satisfy them. Then, call the method setting the parameter **parallel = TRUE**, as follows: 
 
 
-```{r}
+```{r, eval = FALSE}
 t0 <- Sys.time() # INITIAL TIME
 # use 'n_cores = NULL' to set the maximum number of cores minus one on your machine 
 res <- FastStepGraph::cv.FastStepGraph(data$X, parallel = TRUE, n_cores = 2)
