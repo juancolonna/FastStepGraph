@@ -48,6 +48,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
   if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
+  if (is.numeric(n_cores)) { if (n_cores <= 0) {stop('n_cores must be greater than 0.')}}
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x <- scale(x) }
   if (data_shuffle) { x <- x[sample(seq_len(n)),] }
@@ -69,7 +70,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     }
     else {
       cl <- parallel::makeCluster(n_cores[1], type="SOCK") # in windows "SOCK"
-      doSNOW::registerDoSNOW(cl)
+      # doSNOW::registerDoSNOW(cl)
+      doParallel::registerDoParallel(cl)
     }
 
     alpha_f_losses <- foreach::foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {

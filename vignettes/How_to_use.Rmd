@@ -83,3 +83,5 @@ difftime(Sys.time(), t0, units = "secs")
 # print(res$alpha_b_opt)
 # print(res$Omega)
 ```
+
+Remember, you can set the `n_cores` parameter to a value equal to the number of cores you have, but be careful as this may freeze your system. Setting it to 1 disables parallel processing, and setting it to a number greater than the number of available cores does not improve efficiency.

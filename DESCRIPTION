@@ -15,7 +15,7 @@ Description: It implements an improved and computationally faster version
 License: MIT + file LICENSE
 URL: https://github.com/juancolonna/FastStepGraph
 Depends: R (>= 4.3),
-Imports: doParallel (>= 1.0), doSNOW (>= 1.0), foreach (>= 1.5), MASS
+Imports: doParallel (>= 1.0), foreach (>= 1.5), MASS
         (>= 7.3)
 Suggests: knitr, rmarkdown, devtools
 VignetteBuilder: knitr
