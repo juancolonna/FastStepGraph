@@ -383,7 +383,7 @@ function, like:</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # INITIAL TIME
 G &lt;- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 0.08555222 secs
+#&gt; Time difference of 0.07043815 secs
 # print(G$Omega)</code></pre>
 <p>If the <code>nei.max</code> argument is omitted, it will be 5. If you
 don’t know the <code>alpha_f</code> and <code>alpha_b</code> values, the
@@ -393,7 +393,7 @@ cross-validation on a combination grid as follows:</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # INITIAL TIME
 res &lt;- FastStepGraph::cv.FastStepGraph(data$X, data_shuffle = FALSE)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 4.793711 secs
+#&gt; Time difference of 3.89137 secs
 
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
@@ -412,13 +412,10 @@ but if you want to disable row shuffle, set it to
 <code>data_shuffle = FALSE</code>.</p>
 <p>To increase time performance, you can run
 <code>cv.FastStepGraph(X, parallel = TRUE)</code> in parallel. Before,
-you’ll need to install and register a parallel backend. Since Windows
-does not support forking, the same backend that works in a Linux or OS X
-environment will not work in Windows. To run on a Linux system the
-<strong>doParallel</strong> dependency must be installed
-<code>install.packages(&quot;doParallel&quot;)</code>. To run on a Windows system,
-<strong>doSNOW</strong> is used <code>install.packages(&quot;doSNOW&quot;)</code>.
-These parallel packages will also require the following dependencies:
+you’ll need to install and register a parallel backend. To run on a
+Linux system the <strong>doParallel</strong> dependency must be
+installed <code>install.packages(&quot;doParallel&quot;)</code>. These parallel
+packages will also require the following dependencies:
 <strong>foreach</strong>, <strong>iterators</strong> and
 <strong>parallel</strong>. Make sure you satisfy them. Then, call the
 method setting the parameter <strong>parallel = TRUE</strong>, as
@@ -427,7 +424,6 @@ follows:</p>
 # use &#39;n_cores = NULL&#39; to set the maximum number of cores minus one on your machine 
 res &lt;- FastStepGraph::cv.FastStepGraph(data$X, parallel = TRUE, n_cores = 2)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 2.640918 secs
 
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
