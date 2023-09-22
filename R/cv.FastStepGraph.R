@@ -10,6 +10,7 @@
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #' @param data_shuffle Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.
+#' @param max.iterations Maximum number of iterations (integer), the defaults values is set to p*(p-1).
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #' @param n_cores An 'int' value specifying the number of cores do you want to use if 'parallel=TRUE'. 
 #' If n_cores is not specified, the maximum number of cores on your machine minus one will be set automatically.
@@ -39,6 +40,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
                              nei.max = 5, 
                              data_scale = FALSE, 
                              data_shuffle = TRUE, 
+                             max.iterations = NULL,
                              parallel = FALSE,
                              n_cores = NULL){
   f <- NULL
@@ -52,7 +54,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x <- scale(x) }
   if (data_shuffle) { x <- x[sample(seq_len(n)),] }
-
+  if (is.null(max.iterations)){ max.iterations <- p*(p-1) }
+  
   ntest <- floor(n/n_folds)
   ntrain <- n - ntest
   alpha_f <- seq(alpha_f_min, alpha_f_max, length=n_alpha)
@@ -83,7 +86,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = f,
                              alpha_b = 0.5*f,
-                             nei.max = nei.max)$beta
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
@@ -107,7 +111,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,
-                             nei.max = nei.max)$beta
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
@@ -131,7 +136,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f[i],
                              alpha_b = 0.5*alpha_f[i],
-                             nei.max = nei.max)$beta
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {
@@ -151,7 +157,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = alpha_f_opt,
                              alpha_b = b,
-                             nei.max = nei.max)$beta
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
       if (loss/n_folds < old_loss) {

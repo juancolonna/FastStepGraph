@@ -13,6 +13,7 @@ cv.FastStepGraph(
   nei.max = 5,
   data_scale = FALSE,
   data_shuffle = TRUE,
+  max.iterations = NULL,
   parallel = FALSE,
   n_cores = NULL
 )
@@ -33,6 +34,8 @@ cv.FastStepGraph(
 \item{data_scale}{Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).}
 
 \item{data_shuffle}{Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.}
+
+\item{max.iterations}{Maximum number of iterations (integer), the defaults values is set to p*(p-1).}
 
 \item{parallel}{Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).}
 

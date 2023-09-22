@@ -7,7 +7,7 @@
 #' @param alpha_b Backward threshold. If alpha_b=0, then the alpha_b=0.5*alpha_f rule is applied.
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
-#' @param max.iterations Maximum number of iterations (integer), defaults set to three times the combination C(p,2)= p!/(2! * (p-2)!)
+#' @param max.iterations Maximum number of iterations (integer), the defaults values is set to p*(p-1).
 #'
 #' @return A list with the values:
 #' \item{\code{vareps}}{Response variables.}
@@ -23,7 +23,13 @@
 #' @examples
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
 #' G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
-FastStepGraph <- function(x, alpha_f, alpha_b=0, nei.max=5, data_scale=FALSE, max.iterations=NULL){
+FastStepGraph <- function(x, 
+                          alpha_f, 
+                          alpha_b=0, 
+                          nei.max=5, 
+                          data_scale=FALSE, 
+                          max.iterations=NULL){
+  
   .lm.fit = combn = cor = cov = NULL
   if (data_scale) { x <- scale(x) }
   n <- dim(x)[1] # number of rows
@@ -46,9 +52,9 @@ FastStepGraph <- function(x, alpha_f, alpha_b=0, nei.max=5, data_scale=FALSE, ma
   b_ij <- rep(2, length(f_ij))
 
   k <- 1
-  if (is.null(max.iterations)){ K <- 2*length(Edges_I[,2]) } # length(Edges_I[,2]) is the total number of edges
+  if (is.null(max.iterations)){ max.iterations <- p*(p-1) } # length(Edges_I[,2]) is the total number of edges
 
-  while ((k <= K)) {
+  while ((k <= max.iterations)) {
     # Select (i,j) that max(|f_ij|)
     f_ij_indx <- which.max(f_ij)
     f_ij_max <- f_ij[f_ij_indx]

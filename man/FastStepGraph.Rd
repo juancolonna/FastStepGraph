@@ -24,7 +24,7 @@ FastStepGraph(
 
 \item{data_scale}{Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).}
 
-\item{max.iterations}{Maximum number of iterations (integer), defaults set to three times the combination C(p,2)= p!/(2! * (p-2)!)}
+\item{max.iterations}{Maximum number of iterations (integer), the defaults values is set to p*(p-1).}
 }
 \value{
 A list with the values:
