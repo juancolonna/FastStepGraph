@@ -7,8 +7,8 @@
 cv.FastStepGraph(
   x,
   n_folds = 5,
-  alpha_f_min = 0.1,
-  alpha_f_max = 0.9,
+  alpha_f_min = 0.2,
+  alpha_f_max = 0.8,
   n_alpha = 32,
   nei.max = 5,
   data_scale = FALSE,
@@ -23,9 +23,9 @@ cv.FastStepGraph(
 
 \item{n_folds}{Number of folds for the cross-validation procedure (default value 5).}
 
-\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.1).}
+\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.2).}
 
-\item{alpha_f_max}{Minimum threshold value for the cross-validation procedure  (default value 0.9).}
+\item{alpha_f_max}{Minimum threshold value for the cross-validation procedure  (default value 0.8).}
 
 \item{n_alpha}{Number of elements in the grid for the cross-validation (default value 32).}
 

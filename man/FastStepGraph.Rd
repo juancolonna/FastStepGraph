@@ -7,7 +7,7 @@
 FastStepGraph(
   x,
   alpha_f,
-  alpha_b = 0,
+  alpha_b = NULL,
   nei.max = 5,
   data_scale = FALSE,
   max.iterations = NULL
@@ -18,7 +18,7 @@ FastStepGraph(
 
 \item{alpha_f}{Forward threshold  (no default value).}
 
-\item{alpha_b}{Backward threshold. If alpha_b=0, then the alpha_b=0.5*alpha_f rule is applied.}
+\item{alpha_b}{Backward threshold. If alpha_b=NULL, then the rule alpha_b <- 0.5*alpha_f is applied.}
 
 \item{nei.max}{Maximum number of variables in every neighborhood (default value 5).}
 
