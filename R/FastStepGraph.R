@@ -4,7 +4,7 @@
 #'
 #' @param x Data matrix (of size n_samples x p_variables).
 #' @param alpha_f Forward threshold  (no default value).
-#' @param alpha_b Backward threshold. If alpha_b=0, then the alpha_b=0.5*alpha_f rule is applied.
+#' @param alpha_b Backward threshold. If alpha_b=NULL, then the rule alpha_b <- 0.5*alpha_f is applied.
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #' @param max.iterations Maximum number of iterations (integer), the defaults values is set to p*(p-1).
@@ -25,7 +25,7 @@
 #' G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
 FastStepGraph <- function(x, 
                           alpha_f, 
-                          alpha_b=0, 
+                          alpha_b=NULL, 
                           nei.max=5, 
                           data_scale=FALSE, 
                           max.iterations=NULL){
@@ -36,10 +36,10 @@ FastStepGraph <- function(x,
   p <- dim(x)[2] # number of columns
 
   if (alpha_f < alpha_b){ stop("alpha_b must be lower than alpha_f") }
-  if (alpha_b == 0){ alpha_b <- 0.5*alpha_f }
-  if (nei.max >= n) { stop('Neiborgs must be less than n-1') }
-  if (nei.max == 0 && n <= p){nei.max <- n-1 }
-  if (nei.max == 0 && p < n){nei.max <- p }
+  if (is.null(alpha_b)){ alpha_b <- 0.5*alpha_f }
+  if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
+  if (nei.max >= n && n <= p) { stop('Neiborgs must be less than n-1') }
+  if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
 
   Edges_I <- t(combn(seq_len(p),2)) # Inactive set of ordered pair (i,j)
   Edges_A <- t(matrix(0,2,dim(Edges_I)[1])) # Active set of ordered pair (i,j)

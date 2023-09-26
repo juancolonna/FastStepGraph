@@ -4,8 +4,8 @@
 #'
 #' @param x Data matrix (of size n x p).
 #' @param n_folds Number of folds for the cross-validation procedure (default value 5).
-#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.1).
-#' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.9).
+#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.2).
+#' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.8).
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
@@ -34,8 +34,8 @@
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
 #' res <- FastStepGraph::cv.FastStepGraph(data$X)
 cv.FastStepGraph <- function(x, n_folds = 5, 
-                             alpha_f_min = 0.1, 
-                             alpha_f_max = 0.9, 
+                             alpha_f_min = 0.2, 
+                             alpha_f_max = 0.8, 
                              n_alpha = 32, 
                              nei.max = 5, 
                              data_scale = FALSE, 
@@ -47,9 +47,10 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   n <- nrow(x)
   p <- ncol(x)
 
-  if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
-  if (nei.max >= n) { stop('The maximum number of neighbors (nei.max) must be less than n-1.') }
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
+  if (nei.max >= n && n <= p) { stop('Neiborgs must be less than n-1') }
+  if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
+  if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
   if (is.numeric(n_cores)) { if (n_cores <= 0) {stop('n_cores must be greater than 0.')}}
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x <- scale(x) }
