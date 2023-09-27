@@ -61,7 +61,7 @@ If the `nei.max` argument is omitted, it will be 5. If you don't know the `alpha
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res <- FastStepGraph::cv.FastStepGraph(data$X, data_shuffle = FALSE)
+res <- FastStepGraph::cv.FastStepGraph(X, data_shuffle = FALSE)
 difftime(Sys.time(), t0, units = "secs")
 
 # print(res$alpha_f_opt)
@@ -77,7 +77,7 @@ To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)`
 ```{r, eval=FALSE}
 t0 <- Sys.time() # INITIAL TIME
 # use 'n_cores = NULL' to set the maximum number of cores minus one on your machine 
-res <- FastStepGraph::cv.FastStepGraph(data$X, parallel = TRUE, n_cores = 2)
+res <- FastStepGraph::cv.FastStepGraph(X, parallel = TRUE, n_cores = 2)
 difftime(Sys.time(), t0, units = "secs")
 
 # print(res$alpha_f_opt)
