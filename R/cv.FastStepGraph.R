@@ -32,7 +32,7 @@
 #' 
 #' @examples
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
-#' res <- FastStepGraph::cv.FastStepGraph(data$X)
+#' res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
 cv.FastStepGraph <- function(x, n_folds = 5, 
                              alpha_f_min = 0.2, 
                              alpha_f_max = 0.8, 

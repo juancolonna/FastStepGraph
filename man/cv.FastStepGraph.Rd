@@ -57,7 +57,7 @@ A list with the values: \cr \cr
 }
 \examples{
 data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
-res <- FastStepGraph::cv.FastStepGraph(data$X)
+res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
 }
 \author{
 Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}

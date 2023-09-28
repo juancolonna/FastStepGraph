@@ -22,7 +22,7 @@
 #' 
 #' @examples
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
-#' G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14)
+#' G <- FastStepGraph::FastStepGraph(data$X, alpha_f = 0.22, alpha_b = 0.14, data_scale=TRUE)
 FastStepGraph <- function(x, 
                           alpha_f, 
                           alpha_b=NULL, 
