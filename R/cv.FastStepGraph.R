@@ -50,6 +50,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if (nei.max >= n && n <= p) { stop('Neiborgs must be less than n-1') }
   if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
+  if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
+  if (n_alpha <= 3) { stop('n_alpha must be larger than 3') }
   if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
   if (is.numeric(n_cores)) { if (n_cores <= 0) {stop('n_cores must be greater than 0.')}}
   if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
@@ -74,11 +76,68 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     }
     else {
       cl <- parallel::makeCluster(n_cores[1], type="SOCK") # in windows "SOCK"
-      # doSNOW::registerDoSNOW(cl)
       doParallel::registerDoParallel(cl)
     }
 
     alpha_f_losses <- foreach::foreach(f = alpha_f, .combine = 'c', .inorder=TRUE) %dopar% {
+      loss <- 0
+      for (k in seq_len(n_folds)) {
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
+                             alpha_f = f,
+                             alpha_b = 0.5*f,
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
+      }
+      # if (loss/n_folds < old_loss) {
+      #   old_loss <- loss/n_folds
+      #   alpha_f_opt <- f
+      #   alpha_b_opt <- 0.5*f
+      # }
+      # old_loss
+      loss/n_folds
+    }
+
+    indx_min_loss <- min(which.min(alpha_f_losses))
+    alpha_f_opt <- alpha_f[indx_min_loss]
+    alpha_b_opt <- 0.5*alpha_f_opt
+    
+    # alpha_b <- c(0.1*alpha_f_opt, 0.9*alpha_f_opt)
+    alpha_b <- seq(0.1*alpha_f_opt, 0.9*alpha_f_opt, length=n_alpha%/%2)
+    alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
+      loss <- 0
+      for (k in seq_len(n_folds)) {
+        sel <- ((k-1)*ntest+1):(k*ntest)
+        x.train <- x[-sel, ]
+        x.test <- x[sel, ]
+        beta <- FastStepGraph(x.train,
+                             alpha_f = alpha_f_opt,
+                             alpha_b = b,
+                             nei.max = nei.max,
+                             max.iterations = max.iterations)$beta
+        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
+      }
+      # if (loss/n_folds < old_loss) {
+      #   old_loss <- loss/n_folds
+      #   alpha_b_opt <- b
+      # }
+      # old_loss
+      loss/n_folds
+    }
+
+    parallel::stopCluster(cl) #stop cluster
+    
+    if (min(alpha_b_losses) < min(alpha_f_losses)){
+      indx_min_loss <- min(which.min(alpha_b_losses))
+      alpha_b_opt <- alpha_b[indx_min_loss]
+    }
+  }
+  
+  else {
+    for (f in alpha_f) {
       loss <- 0
       for (k in seq_len(n_folds)) {
         sel <- ((k-1)*ntest+1):(k*ntest)
@@ -96,59 +155,9 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         alpha_f_opt <- f
         alpha_b_opt <- 0.5*f
       }
-      old_loss
     }
 
-    indx_min_loss <- min(which.min(alpha_f_losses))
-    alpha_f_opt <- alpha_f[indx_min_loss]
-
-    alpha_b <- c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
-    alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
-      loss <- 0
-      for (k in seq_len(n_folds)) {
-        sel <- ((k-1)*ntest+1):(k*ntest)
-        x.train <- x[-sel, ]
-        x.test <- x[sel, ]
-        beta <- FastStepGraph(x.train,
-                             alpha_f = alpha_f_opt,
-                             alpha_b = b,
-                             nei.max = nei.max,
-                             max.iterations = max.iterations)$beta
-        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
-      }
-      if (loss/n_folds < old_loss) {
-        old_loss <- loss/n_folds
-        alpha_b_opt <- b
-      }
-      old_loss
-    }
-
-    parallel::stopCluster(cl) #stop cluster
-    indx_min_loss <- min(which.min(alpha_b_losses))
-    alpha_b_opt <- alpha_b[indx_min_loss]
-  }
-  else {
-    for (i in seq_len(length(alpha_f))) {
-      loss <- 0
-      for (k in seq_len(n_folds)) {
-        sel <- ((k-1)*ntest+1):(k*ntest)
-        x.train <- x[-sel, ]
-        x.test <- x[sel, ]
-        beta <- FastStepGraph(x.train,
-                             alpha_f = alpha_f[i],
-                             alpha_b = 0.5*alpha_f[i],
-                             nei.max = nei.max,
-                             max.iterations = max.iterations)$beta
-        loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
-      }
-      if (loss/n_folds < old_loss) {
-        old_loss <- loss/n_folds
-        alpha_f_opt <- alpha_f[i]
-        alpha_b_opt <- 0.5*alpha_f[i]
-      }
-    }
-
-    alpha_b <- c(0.1*alpha_f_opt, 0.95*alpha_f_opt)
+    alpha_b <- seq(0.1*alpha_f_opt, 0.9*alpha_f_opt, length=n_alpha%/%2)
     for (b in alpha_b) {
       loss <- 0
       for (k in seq_len(n_folds)) {

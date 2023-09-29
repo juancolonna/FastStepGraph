@@ -61,7 +61,7 @@ If the `nei.max` argument is omitted, it will be 5. If you don't know the `alpha
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res <- FastStepGraph::cv.FastStepGraph(X, data_shuffle = FALSE)
+res <- FastStepGraph::cv.FastStepGraph(X, data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 
 # print(res$alpha_f_opt)
