@@ -106,7 +106,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     alpha_b_opt <- 0.5*alpha_f_opt
     
     # alpha_b <- c(0.1*alpha_f_opt, 0.9*alpha_f_opt)
-    alpha_b <- seq(0.1*alpha_f_opt, 0.9*alpha_f_opt, length=n_alpha%/%2)
+    alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
       loss <- 0
       for (k in seq_len(n_folds)) {
@@ -157,7 +157,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
       }
     }
 
-    alpha_b <- seq(0.1*alpha_f_opt, 0.9*alpha_f_opt, length=n_alpha%/%2)
+    alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     for (b in alpha_b) {
       loss <- 0
       for (k in seq_len(n_folds)) {
