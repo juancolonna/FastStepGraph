@@ -9,11 +9,13 @@ cv.FastStepGraph(
   n_folds = 5,
   alpha_f_min = 0.2,
   alpha_f_max = 0.8,
+  b_coef = 0.5,
   n_alpha = 32,
   nei.max = 5,
   data_scale = FALSE,
   data_shuffle = TRUE,
   max.iterations = NULL,
+  return_model = FALSE,
   parallel = FALSE,
   n_cores = NULL
 )
@@ -37,16 +39,19 @@ cv.FastStepGraph(
 
 \item{max.iterations}{Maximum number of iterations (integer), the defaults values is set to p*(p-1).}
 
+\item{return_model}{Default FALSE. If set to TRUE, at the end of cross-validation, FastStepGraph is called with the optimal parameters alpha_f and alpha_b, returning \code{vareps}, \code{beta}, \code{Edges} and \code{Omega}.}
+
 \item{parallel}{Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).}
 
 \item{n_cores}{An 'int' value specifying the number of cores do you want to use if 'parallel=TRUE'. 
 If n_cores is not specified, the maximum number of cores on your machine minus one will be set automatically.}
 }
 \value{
-A list with the values: \cr \cr
+A list with the values:
 \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
 \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
 \item{\code{CV.loss}}{minimum loss.}
+If return_model=TRUE, then also returns:
 \item{\code{vareps}}{Response variables.}
 \item{\code{beta}}{Regression coefficients.}
 \item{\code{Edges}}{Estimated set of edges.}

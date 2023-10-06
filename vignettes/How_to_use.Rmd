@@ -28,11 +28,6 @@ To install the last version of this package directly from GitHub uncomment and r
 
 # Then, load it:
 library(FastStepGraph)
-
-# If you directly cloned the github repository, 
-# then you should uncomment these lines to load the functions:
-# source('FastStepGraph.R')
-# source('SigmaAR.R')
 ```
 
 Simulate Gaussian Data with an Autoregressive (AR) Model:
@@ -48,28 +43,37 @@ data <- FastStepGraph::SigmaAR(n, p, phi)
 X <- scale(data$X) # standardizing variables
 ```
 
-Afterwards, fit the Omega matrix by calling the Fast Step Graph function, like:
-
-```{r}
-t0 <- Sys.time() # INITIAL TIME
-G <- FastStepGraph::FastStepGraph(X, alpha_f = 0.22, alpha_b = 0.14)
-difftime(Sys.time(), t0, units = "secs")
-# print(G$Omega)
-```
-
-If the `nei.max` argument is omitted, it will be 5. If you don't know the `alpha_f` and `alpha_b` values, the use cross-validation. If your input variables are non-standardized (with zero mean and unit variance), we recommend that you set `data_scale=TURE`. To find the optimal $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ parameters for the previously generated **X** data, we can perform a cross-validation on a combination grid as follows:
+To fit the Omega matrix with FastStepGraph() function you have to know the optimal values of $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$. If you don't know these values, try to find them using cross-validation as follows: 
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
 res <- FastStepGraph::cv.FastStepGraph(X, data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
+# print(res$alpha_f_opt)
+# print(res$alpha_b_opt)
+```
+If your input variables are non-standardized (with zero mean and unit variance), we recommend that you set `data_scale=TURE`. 
 
+Subsequently, calculate the Omega matrix by calling the FastStepGraph() function passing the optimal parameters $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ found by cross-validation to fit the final model:
+
+```{r}
+t0 <- Sys.time() # INITIAL TIME
+G <- FastStepGraph::FastStepGraph(X, alpha_f = res$alpha_f_opt, alpha_b = res$alpha_b_opt)
+difftime(Sys.time(), t0, units = "secs")
+# print(G$Omega)
+```
+You can also perform cross-validation to obtain the optimal parameters and return the fitted model by setting the `return_model=TRUE` option, as follows:
+
+```{r}
+t0 <- Sys.time() # INITIAL TIME
+res <- FastStepGraph::cv.FastStepGraph(X, return_model=TRUE, data_shuffle = TRUE)
+difftime(Sys.time(), t0, units = "secs")
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
 # print(res$Omega)
 ```
 
-The arguments `n_folds = 5`, `alpha_f_min = 0.1`, `alpha_f_max = 0.9`, `n_alpha = 32` (size of the grid search) and `nei.max = 5`, have defaults values and can be omitted. Note that, `cv.FastStepGraph(X)` is not an exhaustive grid search over $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$. This is a heuristic that always sets $\mathbf{\alpha_b}$ = $\frac{\mathbf{\alpha_f}}{2}$. It is recommended to shuffle the rows of `X` before running cross-validation. The default value is `data_shuffle = TRUE`, but if you want to disable row shuffle, set it to `data_shuffle = FALSE`.
+The arguments `n_folds = 5`, `alpha_f_min = 0.1`, `alpha_f_max = 0.9`, `n_alpha = 32` (size of the grid search) and `nei.max = 5`, have defaults values and can be omitted. Note that, `cv.FastStepGraph(X)` is not an exhaustive grid search over $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$. This is a heuristic that tests only a few $\mathbf{\alpha_b}$ values starting with the rule $\mathbf{\alpha_b}=\frac{\mathbf{\alpha_f}}{2}$. It is recommended to shuffle the rows of `X` before running cross-validation. The default value is `data_shuffle = TRUE`, but if you want to disable row shuffle, set it to `data_shuffle = FALSE`.
 
 To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)` in parallel. Before, you'll need to install and register a parallel backend. To run on a Linux system the **doParallel** dependency must be installed `install.packages("doParallel")`. These parallel packages will also require the following dependencies: **foreach**, **iterators** and **parallel**. Make sure you satisfy them. Then, call the method setting the parameter **parallel = TRUE**, as follows: 
 
@@ -77,12 +81,11 @@ To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)`
 ```{r, eval=FALSE}
 t0 <- Sys.time() # INITIAL TIME
 # use 'n_cores = NULL' to set the maximum number of cores minus one on your machine 
-res <- FastStepGraph::cv.FastStepGraph(X, parallel = TRUE, n_cores = 2)
+res <- FastStepGraph::cv.FastStepGraph(X, return_model=TRUE, parallel = TRUE, n_cores = 2)
 difftime(Sys.time(), t0, units = "secs")
-
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
 # print(res$Omega)
 ```
 
-Remember, you can set the `n_cores` parameter to a value equal to the number of cores you have, but be careful as this may freeze your system. Setting it to 1 disables parallel processing, and setting it to a number greater than the number of available cores does not improve efficiency.
+Remember, you can set the `n_cores` parameter to a value equal to the number of cores you have, but be careful as this may overload your system. Setting it to `1` disables parallel processing, and setting it to a number greater than the number of available cores does not improve efficiency.

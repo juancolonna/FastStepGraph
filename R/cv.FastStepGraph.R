@@ -11,14 +11,16 @@
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #' @param data_shuffle Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.
 #' @param max.iterations Maximum number of iterations (integer), the defaults values is set to p*(p-1).
+#' @param return_model Default FALSE. If set to TRUE, at the end of cross-validation, FastStepGraph is called with the optimal parameters alpha_f and alpha_b, returning \code{vareps}, \code{beta}, \code{Edges} and \code{Omega}.
 #' @param parallel Boolean parameter (TRUE or FALSE), when to run Cross-Validation in parallel using a multicore architecture (default FALSE).
 #' @param n_cores An 'int' value specifying the number of cores do you want to use if 'parallel=TRUE'. 
 #' If n_cores is not specified, the maximum number of cores on your machine minus one will be set automatically.
 #' 
-#' @return A list with the values: \cr \cr
+#' @return A list with the values:
 #' \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
 #' \item{\code{alpha_f_opt}}{the optimal alpha_f value.}
 #' \item{\code{CV.loss}}{minimum loss.}
+#' If return_model=TRUE, then also returns:
 #' \item{\code{vareps}}{Response variables.}
 #' \item{\code{beta}}{Regression coefficients.}
 #' \item{\code{Edges}}{Estimated set of edges.}
@@ -36,11 +38,13 @@
 cv.FastStepGraph <- function(x, n_folds = 5, 
                              alpha_f_min = 0.2, 
                              alpha_f_max = 0.8, 
+                             b_coef = 0.5,
                              n_alpha = 32, 
                              nei.max = 5, 
                              data_scale = FALSE, 
                              data_shuffle = TRUE, 
                              max.iterations = NULL,
+                             return_model = FALSE,
                              parallel = FALSE,
                              n_cores = NULL){
   f <- NULL
@@ -87,25 +91,20 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         x.test <- x[sel, ]
         beta <- FastStepGraph(x.train,
                              alpha_f = f,
-                             alpha_b = 0.5*f,
+                             alpha_b = b_coef*f,
+                             # alpha_b = 0.5*f,
                              nei.max = nei.max,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      # if (loss/n_folds < old_loss) {
-      #   old_loss <- loss/n_folds
-      #   alpha_f_opt <- f
-      #   alpha_b_opt <- 0.5*f
-      # }
-      # old_loss
       loss/n_folds
     }
 
     indx_min_loss <- min(which.min(alpha_f_losses))
     alpha_f_opt <- alpha_f[indx_min_loss]
-    alpha_b_opt <- 0.5*alpha_f_opt
+    alpha_b_opt <- b_coef*alpha_f_opt
+    # alpha_b_opt <- 0.5*alpha_f_opt    
     
-    # alpha_b <- c(0.1*alpha_f_opt, 0.9*alpha_f_opt)
     alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
       loss <- 0
@@ -120,11 +119,6 @@ cv.FastStepGraph <- function(x, n_folds = 5,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      # if (loss/n_folds < old_loss) {
-      #   old_loss <- loss/n_folds
-      #   alpha_b_opt <- b
-      # }
-      # old_loss
       loss/n_folds
     }
 
@@ -145,7 +139,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         x.test <- x[sel, ]
         beta <- FastStepGraph(x.train,
                              alpha_f = f,
-                             alpha_b = 0.5*f,
+                             alpha_b = b_coef*f,
+                             # alpha_b = 0.5*f,
                              nei.max = nei.max,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
@@ -153,7 +148,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
       if (loss/n_folds < old_loss) {
         old_loss <- loss/n_folds
         alpha_f_opt <- f
-        alpha_b_opt <- 0.5*f
+        alpha_b_opt <- b_coef*f
+        # alpha_b_opt <- 0.5*f
       }
     }
 
@@ -177,13 +173,20 @@ cv.FastStepGraph <- function(x, n_folds = 5,
       }
     }
   }
-
-  G <- FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
-  return(list(alpha_f_opt = alpha_f_opt,
+  
+  if (return_model) {
+    G <- FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
+   return(list(alpha_f_opt = alpha_f_opt,
               alpha_b_opt = alpha_b_opt,
               CV.loss = old_loss,
               vareps = G$vareps,
               beta = G$beta,
               Edges = G$Edges,
               Omega = G$Omega))
+  }
+  else {
+    return(list(alpha_f_opt = alpha_f_opt,
+                alpha_b_opt = alpha_b_opt,
+                CV.loss = old_loss))
+  }
 }
