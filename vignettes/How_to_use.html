@@ -361,32 +361,33 @@ uncomment and run:</p>
 <span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># Generate Data from a Gaussian distribution </span></span>
 <span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>data <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">SigmaAR</span>(n, p, phi)</span>
 <span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">scale</span>(data<span class="sc">$</span>X) <span class="co"># standardizing variables</span></span></code></pre></div>
-<p>To fit the Omega matrix with FastStepGraph() function you have to
-know the optimal values of <span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span>. If you don’t know
+<p>To fit the Omega matrix with <code>FastStepGraph()</code> function
+you have to know the optimal values of <span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span>. If you don’t know
 these values, try to find them using cross-validation as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>res <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">cv.FastStepGraph</span>(X, <span class="at">data_shuffle =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 4.275715 secs</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 3.445311 secs</span></span>
 <span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># print(res$alpha_f_opt)</span></span>
 <span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co"># print(res$alpha_b_opt)</span></span></code></pre></div>
 <p>If your input variables are non-standardized (with zero mean and unit
-variance), we recommend that you set <code>data_scale=TURE</code>.</p>
-<p>Subsequently, calculate the Omega matrix by calling the
-FastStepGraph() function passing the optimal parameters <span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span> found by
+variance), we recommend that you set <code>data_scale=TURE</code>.
+Subsequently, calculate the Omega matrix by calling the
+<code>FastStepGraph()</code> function passing the optimal parameters
+<span class="math inline">\(\mathbf{\alpha_f}\)</span> and <span class="math inline">\(\mathbf{\alpha_b}\)</span> found by
 cross-validation to fit the final model:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>G <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">FastStepGraph</span>(X, <span class="at">alpha_f =</span> res<span class="sc">$</span>alpha_f_opt, <span class="at">alpha_b =</span> res<span class="sc">$</span>alpha_b_opt)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 0.002799034 secs</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 0.00240159 secs</span></span>
 <span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># print(G$Omega)</span></span></code></pre></div>
-<p>You can also perform cross-validation to obtain the optimal
-parameters and return the fitted model by setting the
-<code>return_model=TRUE</code> option, as follows:</p>
+<p>You can also perform these two steps, the cross-validation to obtain
+the ideal parameters and return the fitted model, in a single step by
+setting the <code>return_model=TRUE</code> option as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>t0 <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># INITIAL TIME</span></span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>res <span class="ot">&lt;-</span> FastStepGraph<span class="sc">::</span><span class="fu">cv.FastStepGraph</span>(X, <span class="at">return_model=</span><span class="cn">TRUE</span>, <span class="at">data_shuffle =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">Sys.time</span>(), t0, <span class="at">units =</span> <span class="st">&quot;secs&quot;</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 4.142864 secs</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; Time difference of 3.435607 secs</span></span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># print(res$alpha_f_opt)</span></span>
 <span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># print(res$alpha_b_opt)</span></span>
 <span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># print(res$Omega)</span></span></code></pre></div>

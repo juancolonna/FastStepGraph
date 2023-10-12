@@ -6,6 +6,7 @@
 #' @param n_folds Number of folds for the cross-validation procedure (default value 5).
 #' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.2).
 #' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.8).
+#' @param b_coef This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
