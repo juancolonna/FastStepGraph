@@ -63,11 +63,8 @@ cv.FastStepGraph <- function(x,
   if (data_scale) { x <- scale(x) }
   if (data_shuffle) { x <- x[sample(seq_len(n)),] }
   if (is.null(max.iterations)){ max.iterations <- p*(p-1) }
+  if (n_folds == 'LOOCV' ) { n_folds = n }
   
-  if (n_folds == 'LOOCV' ) { 
-    message('Using Leave-One-Out Corss-validation')
-    n_folds = n
-    }
   ntest <- floor(n/n_folds)
   ntrain <- n - ntest
   alpha_f <- seq(alpha_f_min, alpha_f_max, length=n_alpha)
