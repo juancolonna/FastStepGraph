@@ -153,7 +153,7 @@ FastStepGraph <- function(x,
 
       ############# steps of main loop (while) ###########################
       k <- k+1
-      if (k > max.iterations){ message('Maximum number iteration reached') }
+      # if (k > max.iterations){ message('Maximum number iteration reached') }
     }
   }
 

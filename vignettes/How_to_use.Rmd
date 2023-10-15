@@ -47,7 +47,10 @@ To fit the Omega matrix with `FastStepGraph()` function you have to know the opt
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res <- FastStepGraph::cv.FastStepGraph(X, data_shuffle = TRUE)
+res <- FastStepGraph::cv.FastStepGraph(X, 
+                                       alpha_f_min=0.5, 
+                                       alpha_f_max=0.8,
+                                       data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
@@ -60,11 +63,15 @@ G <- FastStepGraph::FastStepGraph(X, alpha_f = res$alpha_f_opt, alpha_b = res$al
 difftime(Sys.time(), t0, units = "secs")
 # print(G$Omega)
 ```
-You can also perform these two steps, the cross-validation to obtain the ideal parameters and return the fitted model, in a single step by setting the `return_model=TRUE` option as follows:
+You can also perform these two steps, the cross-validation to obtain the ideal parameters and return the fitted model, in a single line by setting the `return_model=TRUE` option as follows:
 
 ```{r}
 t0 <- Sys.time() # INITIAL TIME
-res <- FastStepGraph::cv.FastStepGraph(X, return_model=TRUE, data_shuffle = TRUE)
+res <- FastStepGraph::cv.FastStepGraph(X, 
+                                       alpha_f_min=0.5, 
+                                       alpha_f_max=0.8,
+                                       return_model=TRUE, 
+                                       data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
@@ -79,7 +86,12 @@ To increase time performance, you can run `cv.FastStepGraph(X, parallel = TRUE)`
 ```{r, eval=FALSE}
 t0 <- Sys.time() # INITIAL TIME
 # use 'n_cores = NULL' to set the maximum number of cores minus one on your machine 
-res <- FastStepGraph::cv.FastStepGraph(X, return_model=TRUE, parallel = TRUE, n_cores = 2)
+res <- FastStepGraph::cv.FastStepGraph(X, 
+                                       alpha_f_min=0.5, 
+                                       alpha_f_max=0.8,
+                                       return_model=TRUE, 
+                                       parallel = TRUE, 
+                                       n_cores = 2)
 difftime(Sys.time(), t0, units = "secs")
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)

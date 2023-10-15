@@ -3,9 +3,9 @@
 #' @description \code{cv.FastStepGraph} implements the cross-validation for the Fast Step Graph algorithm.
 #'
 #' @param x Data matrix (of size n x p).
+#' @param alpha_f_min Minimum alpha_f value for the cross-validation procedure (example 0.1).
+#' @param alpha_f_max Maximum alpha_f value for the cross-validation procedure  (example 0.9).
 #' @param n_folds Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.
-#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.4).
-#' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.8).
 #' @param b_coef This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 20).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
@@ -35,11 +35,11 @@
 #' 
 #' @examples
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
-#' res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
+#' res <- FastStepGraph::cv.FastStepGraph(data$X, alpha_f_min=0.1, alpha_f_max = 0.9, data_scale=TRUE)
 cv.FastStepGraph <- function(x, 
-                             n_folds = 10, 
-                             alpha_f_min = 0.4, 
-                             alpha_f_max = 0.8, 
+                             alpha_f_min, 
+                             alpha_f_max, 
+                             n_folds = 10,
                              b_coef = 0.5,
                              n_alpha = 20, 
                              nei.max = 5, 
@@ -53,6 +53,9 @@ cv.FastStepGraph <- function(x,
   n <- nrow(x)
   p <- ncol(x)
 
+  if (alpha_f_max >= 1) { stop('Please, decrease alpha_f_max.') }
+  if (alpha_f_min <= 0) { stop('Please, increase alpha_f_min.') }
+  if (alpha_f_min >= alpha_f_max) { stop('alpha_f_min must be less than alpha_f_max.') }
   if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if (nei.max >= n && n <= p) { stop('Neiborgs must be less than n-1') }
   if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
@@ -104,12 +107,19 @@ cv.FastStepGraph <- function(x,
     # avoiding NA
     alpha_f <- alpha_f[!is.na(alpha_f_losses)]
     alpha_f_losses <- alpha_f_losses[!is.na(alpha_f_losses)]
+
+    if (length(alpha_f) == 0) { 
+      parallel::stopCluster(cl)
+      stop("Convergence failed, no alpha_f value found (possibly due to a problem in the input data).
+            To solve this issue, try increasing alpha_f_min, decreasing b_coef, and/or increasing n_folds. 
+            You can also add Gaussian noise to the data with zero mean and very small variance.") 
+    }
     
     indx_min_loss <- min(which.min(alpha_f_losses))
     min_loss = alpha_f_losses[indx_min_loss]
     alpha_f_opt <- alpha_f[indx_min_loss]
     alpha_b_opt <- b_coef*alpha_f_opt
-    
+
     alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
       loss <- 0
@@ -133,13 +143,15 @@ cv.FastStepGraph <- function(x,
     alpha_b <- alpha_b[!is.na(alpha_b_losses)]
     alpha_b_losses <- alpha_b_losses[!is.na(alpha_b_losses)]
     
-    if (min(alpha_b_losses) < min(alpha_f_losses)){
+    if (length(alpha_b) == 0) { }
+    else if (min(alpha_b_losses) < min(alpha_f_losses)){
       indx_min_loss <- min(which.min(alpha_b_losses))
       min_loss = alpha_b_losses[indx_min_loss]
       alpha_b_opt <- alpha_b[indx_min_loss]
     }
   }
   
+  # Not Parallel loop
   else {
     for (f in alpha_f) {
       loss <- 0
@@ -154,13 +166,21 @@ cv.FastStepGraph <- function(x,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      if (loss/n_folds < min_loss) {
+ 
+      if (is.na(loss)){ }
+      else if (loss/n_folds < min_loss) {
         min_loss <- loss/n_folds
         alpha_f_opt <- f
         alpha_b_opt <- b_coef*f
       }
     }
-
+    
+    if (is.infinite(min_loss)) {
+      stop("Convergence failed, no alpha_f value found (possibly due to a problem in the input data).
+            To solve this issue, try increasing alpha_f_min, decreasing b_coef, and/or increasing n_folds. 
+            You can also add Gaussian noise to the data with zero mean and very small variance.")
+    }
+    
     alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     for (b in alpha_b) {
       loss <- 0
@@ -175,7 +195,8 @@ cv.FastStepGraph <- function(x,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      if (loss/n_folds < min_loss) {
+      if (is.na(loss)){ }
+      else if (loss/n_folds < min_loss) {
         min_loss <- loss/n_folds
         alpha_b_opt <- b
       }

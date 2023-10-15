@@ -1,3 +1,9 @@
+Changes in version 0.1.2
+
+Improvements
+
+    - We added a new checking routine in cv.FastStepGraph that prevents the generation of incorrect results when for some reason the input data cannot be adjusted with cross-validation.
+    
 Changes in version 0.1.1
 
 Improvements

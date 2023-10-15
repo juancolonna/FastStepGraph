@@ -6,9 +6,9 @@
 \usage{
 cv.FastStepGraph(
   x,
+  alpha_f_min,
+  alpha_f_max,
   n_folds = 10,
-  alpha_f_min = 0.4,
-  alpha_f_max = 0.8,
   b_coef = 0.5,
   n_alpha = 20,
   nei.max = 5,
@@ -23,11 +23,11 @@ cv.FastStepGraph(
 \arguments{
 \item{x}{Data matrix (of size n x p).}
 
+\item{alpha_f_min}{Minimum alpha_f value for the cross-validation procedure (example 0.1).}
+
+\item{alpha_f_max}{Maximum alpha_f value for the cross-validation procedure  (example 0.9).}
+
 \item{n_folds}{Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.}
-
-\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.4).}
-
-\item{alpha_f_max}{Minimum threshold value for the cross-validation procedure  (default value 0.8).}
 
 \item{b_coef}{This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.}
 
@@ -64,7 +64,7 @@ If return_model=TRUE, then also returns:
 }
 \examples{
 data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
-res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
+res <- FastStepGraph::cv.FastStepGraph(data$X, alpha_f_min=0.1, alpha_f_max = 0.9, data_scale=TRUE)
 }
 \author{
 Prof. Juan G. Colonna, PhD. \email{juancolonna@icomp.ufam.edu.br}
