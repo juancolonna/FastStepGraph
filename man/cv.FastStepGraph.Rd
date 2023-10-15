@@ -6,11 +6,11 @@
 \usage{
 cv.FastStepGraph(
   x,
-  n_folds = 5,
-  alpha_f_min = 0.2,
+  n_folds = 10,
+  alpha_f_min = 0.5,
   alpha_f_max = 0.8,
   b_coef = 0.5,
-  n_alpha = 32,
+  n_alpha = 20,
   nei.max = 5,
   data_scale = FALSE,
   data_shuffle = TRUE,
@@ -23,15 +23,15 @@ cv.FastStepGraph(
 \arguments{
 \item{x}{Data matrix (of size n x p).}
 
-\item{n_folds}{Number of folds for the cross-validation procedure (default value 5).}
+\item{n_folds}{Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.}
 
-\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.2).}
+\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.5).}
 
 \item{alpha_f_max}{Minimum threshold value for the cross-validation procedure  (default value 0.8).}
 
 \item{b_coef}{This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.}
 
-\item{n_alpha}{Number of elements in the grid for the cross-validation (default value 32).}
+\item{n_alpha}{Number of elements in the grid for the cross-validation (default value 20).}
 
 \item{nei.max}{Maximum number of variables in every neighborhood (default value 5).}
 

@@ -3,11 +3,11 @@
 #' @description \code{cv.FastStepGraph} implements the cross-validation for the Fast Step Graph algorithm.
 #'
 #' @param x Data matrix (of size n x p).
-#' @param n_folds Number of folds for the cross-validation procedure (default value 5).
-#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.2).
+#' @param n_folds Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.
+#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.5).
 #' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.8).
 #' @param b_coef This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.
-#' @param n_alpha Number of elements in the grid for the cross-validation (default value 32).
+#' @param n_alpha Number of elements in the grid for the cross-validation (default value 20).
 #' @param nei.max Maximum number of variables in every neighborhood (default value 5).
 #' @param data_scale Boolean parameter (TRUE or FALSE), when to scale data to zero mean and unit variance (default FALSE).
 #' @param data_shuffle Boolean parameter (default TRUE), when samples (rows of X) must be randomly shuffled.
@@ -36,11 +36,12 @@
 #' @examples
 #' data <- FastStepGraph::SigmaAR(30, 50, 0.4) # Simulate Gaussian Data
 #' res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
-cv.FastStepGraph <- function(x, n_folds = 5, 
-                             alpha_f_min = 0.2, 
+cv.FastStepGraph <- function(x, 
+                             n_folds = 10, 
+                             alpha_f_min = 0.5, 
                              alpha_f_max = 0.8, 
                              b_coef = 0.5,
-                             n_alpha = 32, 
+                             n_alpha = 20, 
                              nei.max = 5, 
                              data_scale = FALSE, 
                              data_shuffle = TRUE, 
@@ -57,18 +58,21 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
   if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
   if (n_alpha <= 3) { stop('n_alpha must be larger than 3') }
-  if (n_folds <= 1) { stop('Number of folds must be equal or larger than 2') }
+  if (n_folds < 2) { stop('Number of folds must be equal or larger than 2') }
   if (is.numeric(n_cores)) { if (n_cores <= 0) {stop('n_cores must be greater than 0.')}}
-  if ((n/n_folds) < 2 ) { stop('Insufficient number of samples to perform cross-validation.') }
   if (data_scale) { x <- scale(x) }
   if (data_shuffle) { x <- x[sample(seq_len(n)),] }
   if (is.null(max.iterations)){ max.iterations <- p*(p-1) }
   
+  if (n_folds == 'LOOCV' ) { 
+    message('Using Leave-One-Out Corss-validation')
+    n_folds = n
+    }
   ntest <- floor(n/n_folds)
   ntrain <- n - ntest
   alpha_f <- seq(alpha_f_min, alpha_f_max, length=n_alpha)
 
-  old_loss <- Inf
+  min_loss <- Inf
   new_loss <- NA
   alpha_f_opt <- NA
   alpha_b_opt <- NA
@@ -93,7 +97,6 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = f,
                              alpha_b = b_coef*f,
-                             # alpha_b = 0.5*f,
                              nei.max = nei.max,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
@@ -102,9 +105,9 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     }
 
     indx_min_loss <- min(which.min(alpha_f_losses))
+    min_loss = alpha_f_losses[indx_min_loss]
     alpha_f_opt <- alpha_f[indx_min_loss]
     alpha_b_opt <- b_coef*alpha_f_opt
-    # alpha_b_opt <- 0.5*alpha_f_opt    
     
     alpha_b <- seq(0.1, 0.9*alpha_f_opt, length=10*alpha_f_opt)
     alpha_b_losses <- foreach::foreach(b = alpha_b, .combine = 'c', .inorder=TRUE) %dopar% {
@@ -127,6 +130,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     
     if (min(alpha_b_losses) < min(alpha_f_losses)){
       indx_min_loss <- min(which.min(alpha_b_losses))
+      min_loss = alpha_f_losses[indx_min_loss]
       alpha_b_opt <- alpha_b[indx_min_loss]
     }
   }
@@ -141,16 +145,14 @@ cv.FastStepGraph <- function(x, n_folds = 5,
         beta <- FastStepGraph(x.train,
                              alpha_f = f,
                              alpha_b = b_coef*f,
-                             # alpha_b = 0.5*f,
                              nei.max = nei.max,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      if (loss/n_folds < old_loss) {
-        old_loss <- loss/n_folds
+      if (loss/n_folds < min_loss) {
+        min_loss <- loss/n_folds
         alpha_f_opt <- f
         alpha_b_opt <- b_coef*f
-        # alpha_b_opt <- 0.5*f
       }
     }
 
@@ -168,8 +170,8 @@ cv.FastStepGraph <- function(x, n_folds = 5,
                              max.iterations = max.iterations)$beta
         loss <- loss + sum(colSums((x.test - x.test%*%beta)^2))
       }
-      if (loss/n_folds < old_loss) {
-        old_loss <- loss/n_folds
+      if (loss/n_folds < min_loss) {
+        min_loss <- loss/n_folds
         alpha_b_opt <- b
       }
     }
@@ -179,7 +181,7 @@ cv.FastStepGraph <- function(x, n_folds = 5,
     G <- FastStepGraph(x, alpha_f = alpha_f_opt, alpha_b = alpha_b_opt, nei.max = nei.max)
    return(list(alpha_f_opt = alpha_f_opt,
               alpha_b_opt = alpha_b_opt,
-              CV.loss = old_loss,
+              CV.loss = min_loss,
               vareps = G$vareps,
               beta = G$beta,
               Edges = G$Edges,
@@ -188,6 +190,6 @@ cv.FastStepGraph <- function(x, n_folds = 5,
   else {
     return(list(alpha_f_opt = alpha_f_opt,
                 alpha_b_opt = alpha_b_opt,
-                CV.loss = old_loss))
+                CV.loss = min_loss))
   }
 }
