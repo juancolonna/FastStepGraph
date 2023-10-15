@@ -7,7 +7,7 @@
 cv.FastStepGraph(
   x,
   n_folds = 10,
-  alpha_f_min = 0.5,
+  alpha_f_min = 0.4,
   alpha_f_max = 0.8,
   b_coef = 0.5,
   n_alpha = 20,
@@ -25,7 +25,7 @@ cv.FastStepGraph(
 
 \item{n_folds}{Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.}
 
-\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.5).}
+\item{alpha_f_min}{Minimum threshold value for the cross-validation procedure (default value 0.4).}
 
 \item{alpha_f_max}{Minimum threshold value for the cross-validation procedure  (default value 0.8).}
 

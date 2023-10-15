@@ -4,7 +4,7 @@
 #'
 #' @param x Data matrix (of size n x p).
 #' @param n_folds Number of folds for the cross-validation procedure (default value 10). This parameter also accepts the string 'LOOCV' to perform Leave-One-Out cross-validation.
-#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.5).
+#' @param alpha_f_min Minimum threshold value for the cross-validation procedure (default value 0.4).
 #' @param alpha_f_max Minimum threshold value for the cross-validation procedure  (default value 0.8).
 #' @param b_coef This parameter applies the empirical rule alpha_b=b_coef*alpha_f during the initial search for the optimal alpha_f parameter while alpha_b remains fixed, after finding optimal alpha_f, alpha_b is varied to find its optimal value. The default value of b_coef is 0.5.
 #' @param n_alpha Number of elements in the grid for the cross-validation (default value 20).
@@ -38,7 +38,7 @@
 #' res <- FastStepGraph::cv.FastStepGraph(data$X, data_scale=TRUE)
 cv.FastStepGraph <- function(x, 
                              n_folds = 10, 
-                             alpha_f_min = 0.5, 
+                             alpha_f_min = 0.4, 
                              alpha_f_max = 0.8, 
                              b_coef = 0.5,
                              n_alpha = 20, 
@@ -103,7 +103,11 @@ cv.FastStepGraph <- function(x,
       }
       loss/n_folds
     }
-
+    
+    # avoiding NA
+    alpha_f <- alpha_f[!is.na(alpha_f_losses)]
+    alpha_f_losses <- alpha_f_losses[!is.na(alpha_f_losses)]
+    
     indx_min_loss <- min(which.min(alpha_f_losses))
     min_loss = alpha_f_losses[indx_min_loss]
     alpha_f_opt <- alpha_f[indx_min_loss]
@@ -128,9 +132,13 @@ cv.FastStepGraph <- function(x,
 
     parallel::stopCluster(cl) #stop cluster
     
+    # avoiding NA
+    alpha_b <- alpha_b[!is.na(alpha_b_losses)]
+    alpha_b_losses <- alpha_b_losses[!is.na(alpha_b_losses)]
+    
     if (min(alpha_b_losses) < min(alpha_f_losses)){
       indx_min_loss <- min(which.min(alpha_b_losses))
-      min_loss = alpha_f_losses[indx_min_loss]
+      min_loss = alpha_b_losses[indx_min_loss]
       alpha_b_opt <- alpha_b[indx_min_loss]
     }
   }
