@@ -46,7 +46,8 @@ FastStepGraph <- function(x,
   N_neighbors <- integer(p) # number of neighbors of each node
 
   e <- x # (n x p) matrix of regression residuals
-  f_ij <- cor(e)
+  f_ij <- cor(e, use="all.obs")
+  f_ij[is.na(f_ij)] <- 0
   lower_tri <- lower.tri(f_ij)
   f_ij <- abs(f_ij[lower_tri])
   b_ij <- rep(2, length(f_ij))
@@ -103,16 +104,15 @@ FastStepGraph <- function(x,
         n_i <- c(Edges_A[which(Edges_A[,2] == i), 1], Edges_A[which(Edges_A[,1] == i), 2])
         n_i <- n_i[-which(n_i==j)]
 
-        if ( length(n_i) > 0 ){ r_i <- .lm.fit(cbind(1, x[,n_i]), x[,i])$residuals}
-        else { r_i <- x[,i] }
+        r_i <- ifelse(length(n_i) > 0, .lm.fit(cbind(1, x[,n_i]), x[,i])$residuals, x[,i])
 
         n_j <- c(Edges_A[which(Edges_A[,2] == j), 1], Edges_A[which(Edges_A[,1] == j), 2])
         n_j <- n_j[-which(n_j==i)]
 
-        if( length(n_j)>0 ){ r_j <- .lm.fit(cbind(1, x[,n_j]), x[,j])$residuals }
-        else{r_j <- x[,j]}
+        r_j <- ifelse(length(n_j)>0, .lm.fit(cbind(1, x[,n_j]), x[,j])$residuals, x[,j])
 
-        b_ij[l] <- abs(cor(r_i, r_j))
+        corr_b <- cor(r_i, r_j)
+        b_ij[l] <- ifelse(is.na(corr_b), 0, abs(corr_b))
       }
 
       ################ Edge elimination ######################################
@@ -136,16 +136,14 @@ FastStepGraph <- function(x,
         n_i_b <- c(Edges_A[which(Edges_A[,2] == i_b), 1], Edges_A[which(Edges_A[,1] == i_b), 2])
         n_j_b <- c(Edges_A[which(Edges_A[,2] == j_b), 1], Edges_A[which(Edges_A[,1] == j_b), 2])
 
-        if( N_neighbors[i_b] > 0) { e[,i_b] <- .lm.fit(cbind(1, x[,n_i_b]), x[,i_b])$residuals}
-        else{ e[,i_b] <- x[,i_b] }
-
-        if( N_neighbors[j_b] > 0) { e[,j_b] <- .lm.fit(cbind(1, x[,n_j_b]), x[,j_b])$residuals}
-        else{ e[,j_b] <- x[,j_b] }
+        e[,i_b] <- ifelse(N_neighbors[i_b] > 0, .lm.fit(cbind(1, x[,n_i_b]), x[,i_b])$residuals, x[,i_b])
+        e[,j_b] <- ifelse(N_neighbors[j_b] > 0, .lm.fit(cbind(1, x[,n_j_b]), x[,j_b])$residuals, x[,j_b])
 
         b_ij[b_ij_indx] <- 2
       }
 
-      f_ij <- cor(e)
+      f_ij <- cor(e, use="all.obs")
+      f_ij[is.na(f_ij)] <- 0
       f_ij <- abs(f_ij[lower_tri])
       H <- which(Edges_A[,1]>0)
       f_ij[H] <- 0
@@ -162,9 +160,11 @@ FastStepGraph <- function(x,
 
   ################## Compute the precision matrix ############################
   col_var <- colvars(e)
-  cor_matrix <- cov(e)
+  cor_matrix <- cov(e, use="all.obs")
+  cor_matrix[is.na(cor_matrix)] <- 0
   Omega <- matrix(0,p,p)
   diag(Omega) <- col_var^(-1)
+  Omega[is.infinite(Omega)] <- 0 # I have to check this condition
   beta <- matrix(0,p,p)
 
   for (edge in which(Edges_A[,2] > 0)){
@@ -173,9 +173,9 @@ FastStepGraph <- function(x,
 
     Omega[i,j] <- cor_matrix[i,j]*Omega[i,i]*Omega[j,j]
     Omega[j,i] <- Omega[i,j]
-
-    beta[i,j] <- -cor_matrix[i,j]/col_var[j]
-    beta[j,i] <- -cor_matrix[i,j]/col_var[i]
+    
+    beta[i,j] <- ifelse(col_var[j] <= .Machine$double.eps, 0, -cor_matrix[i,j]/col_var[j])
+    beta[j,i] <- ifelse(col_var[i] <= .Machine$double.eps, 0, -cor_matrix[i,j]/col_var[i])
   }
   return(list(vareps=e, beta=beta, Edges=Edges_A, Omega=Omega))
 }
