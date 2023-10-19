@@ -193,22 +193,3 @@ colvars <- function(x) {
   centeredX <- x - rep(means, each = n)
   colSums(centeredX^2) / (n-1)
 }
-
-f <- function(v) {
-  sqrt(sum(v^2) / max(1, length(v) - 1L))+000.1
-}
-
-corr <- function(x) {
-  p <- nrow(x)
-  
-  center <- colMeans(x, na.rm=TRUE)
-  x <- sweep(x, 2L, center, check.margin=FALSE)
-
-  scale <- apply(x, 2L, f)
-  x <- sweep(x, 2L, scale, "/", check.margin=FALSE)
-
-  # x[is.na(x)] <- 0
-  cc <- tcrossprod(t(x))/(p-1)
-  diag(cc) <- 1
-  cc
-}
