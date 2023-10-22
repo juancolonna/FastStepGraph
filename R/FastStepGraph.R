@@ -26,23 +26,24 @@
 FastStepGraph <- function(x, 
                           alpha_f, 
                           alpha_b=NULL, 
-                          nei.max=5, 
+                          nei.max=5L, 
                           data_scale=FALSE, 
                           max.iterations=NULL){
   
-  .lm.fit = combn = cor = cov = NULL
+  .lm.fit = combn = cor = cov = .colvars = .neighbors_of = .compute_omega_and_beta = NULL
+  
   if (data_scale) { x <- scale(x) }
   n <- dim(x)[1] # number of rows
   p <- dim(x)[2] # number of columns
 
   if (alpha_f < alpha_b){ stop("alpha_b must be lower than alpha_f") }
   if (is.null(alpha_b)){ alpha_b <- 0.5*alpha_f }
-  if (nei.max == 0) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
+  if (nei.max == 0L) { stop('The minimum number of neighbors (nei.max) must be greater than 0.') }
   if (nei.max >= n && n <= p) { stop('Neiborgs must be less than n-1') }
   if (nei.max >= p && p <= n) { stop('Neiborgs must be less than p-1') }
 
   Edges_I <- t(combn(seq_len(p),2)) # Inactive set of ordered pair (i,j)
-  Edges_A <- t(matrix(0,2,dim(Edges_I)[1])) # Active set of ordered pair (i,j)
+  Edges_A <- t(matrix(0L,2,dim(Edges_I)[1])) # Active set of ordered pair (i,j)
   N_neighbors <- integer(p) # number of neighbors of each node
 
   e <- x # (n x p) matrix of regression residuals
@@ -52,8 +53,8 @@ FastStepGraph <- function(x,
   f_ij <- abs(f_ij[lower_tri])
   b_ij <- rep(2, length(f_ij))
 
-  k <- 1
-  if (is.null(max.iterations)){ max.iterations <- p*(p-1) } # length(Edges_I[,2]) is the total number of edges
+  k <- 1L
+  if (is.null(max.iterations)){ max.iterations <- as.integer(p*(p-1)) } # length(Edges_I[,2]) is the total number of edges
 
   while ((k <= max.iterations)) {
     # Select (i,j) that max(|f_ij|)
@@ -67,15 +68,15 @@ FastStepGraph <- function(x,
 
     # If the number of neighbors for a given node exceeds the maximum allowed number
     # of neighbors (nei.max), refrain from adding a new neighbor to that node.
-    else if ((N_neighbors[i_f]+1) > nei.max || (N_neighbors[j_f]+1) > nei.max) { f_ij[f_ij_indx] <- 0 }
+    else if ((N_neighbors[i_f]+1L) > nei.max || (N_neighbors[j_f]+1L) > nei.max) { f_ij[f_ij_indx] <- 0 }
 
     else{
       ################ Forward-Step ######################################
-      N_neighbors[i_f] <- N_neighbors[i_f]+1
-      N_neighbors[j_f] <- N_neighbors[j_f]+1
+      N_neighbors[i_f] <- N_neighbors[i_f]+1L
+      N_neighbors[j_f] <- N_neighbors[j_f]+1L
 
       Edges_A[f_ij_indx,] <- Edges_I[f_ij_indx,]
-      Edges_I[f_ij_indx,] <- c(0,0)
+      Edges_I[f_ij_indx,] <- c(0L,0L)
 
       # Update Prediction Errors for (i_f,j_f)
       n_i_f_pos_2 <- which(Edges_A[,2]==i_f)
@@ -90,34 +91,17 @@ FastStepGraph <- function(x,
       e[,i_f] <- .lm.fit(cbind(1, x[,n_i_f]), x[,i_f])$residuals
       e[,j_f] <- .lm.fit(cbind(1, x[,n_j_f]), x[,j_f])$residuals
 
-      ############### Backward-Step ######################################
-      # Compute Prediction Errors r_i and r_j for (i,j) in the active set Edges_A
-      L <- unique(c(n_i_f_pos_2, n_i_f_pos_1, n_j_f_pos_1, n_j_f_pos_2))
-      b_ij[f_ij_indx] <- f_ij_max
-      L <- L[-which(L == f_ij_indx)]
-
       ############### Residuals update ###################################
-      for (l in L) {
-        i <- Edges_A[l, 1]
-        j <- Edges_A[l, 2]
-
-        n_i <- c(Edges_A[which(Edges_A[,2] == i), 1], Edges_A[which(Edges_A[,1] == i), 2])
-        n_i <- n_i[-which(n_i==j)]
-        if(length(n_i) > 0) { r_i <- .lm.fit(cbind(1, x[,n_i]), x[,i])$residuals } 
-        else { r_i <-  x[,i] }
-
-        n_j <- c(Edges_A[which(Edges_A[,2] == j), 1], Edges_A[which(Edges_A[,1] == j), 2])
-        n_j <- n_j[-which(n_j==i)]
-        if(length(n_j) > 0) { r_j <- .lm.fit(cbind(1, x[,n_j]), x[,j])$residuals }
-        else { r_j <- x[,j] }
-
-        # b_ij[l] <- abs(cor(r_i, r_j))
-        corr_b <- cor(r_i, r_j)
-        b_ij[l] <- ifelse(is.na(corr_b), 0, abs(corr_b)) # I have to check this condition
-      }
-
-      ################ Edge elimination ######################################
+      # Compute Prediction Errors r_i and r_j for (i,j) in the active set Edges_A
+      # L <- unique(c(n_i_f_pos_2, n_i_f_pos_1, n_j_f_pos_1, n_j_f_pos_2)) # check if unique is necessary
+      L <- c(n_i_f_pos_2, n_i_f_pos_1, n_j_f_pos_1, n_j_f_pos_2)
+      L <- L[-which(L == f_ij_indx)]
+      
+      for (l in L) { b_ij[l] <- .residuals_update(l, L, Edges_A, x) }
+      
+      ############### Backward-Step ######################################
       # Select (i,j) that min(|b_ij|) <= alpha_b
+      b_ij[f_ij_indx] <- f_ij_max # don't change this line, otherwise it'll cause an infinite loop
       b_ij_indx <- which.min(b_ij)
       b_ij_min <- b_ij[b_ij_indx]
 
@@ -127,20 +111,20 @@ FastStepGraph <- function(x,
         i_b <- Edges_A[b_ij_indx, 1]
         j_b <- Edges_A[b_ij_indx, 2]
 
-        N_neighbors[i_b] <- N_neighbors[i_b]-1
-        N_neighbors[j_b] <- N_neighbors[j_b]-1
+        N_neighbors[i_b] <- N_neighbors[i_b]-1L
+        N_neighbors[j_b] <- N_neighbors[j_b]-1L
 
         Edges_I[b_ij_indx,] <- Edges_A[b_ij_indx,]
-        Edges_A[b_ij_indx,] <- c(0,0)
+        Edges_A[b_ij_indx,] <- c(0L,0L)
 
         # Update Prediction Errors for (i_b,j_b)
-        n_i_b <- c(Edges_A[which(Edges_A[,2] == i_b), 1], Edges_A[which(Edges_A[,1] == i_b), 2])
-        n_j_b <- c(Edges_A[which(Edges_A[,2] == j_b), 1], Edges_A[which(Edges_A[,1] == j_b), 2])
+        n_i_b <- .neighbors_of(i_b, Edges_A)
+        n_j_b <- .neighbors_of(j_b, Edges_A)
 
-        if(N_neighbors[i_b] > 0) { e[,i_b] <- .lm.fit(cbind(1, x[,n_i_b]), x[,i_b])$residuals }
+        if(N_neighbors[i_b] > 0L) { e[,i_b] <- .lm.fit(cbind(1, x[,n_i_b]), x[,i_b])$residuals }
         else { e[,i_b] <- x[,i_b] }
         
-        if(N_neighbors[j_b] > 0) { e[,j_b] <- .lm.fit(cbind(1, x[,n_j_b]), x[,j_b])$residuals }
+        if(N_neighbors[j_b] > 0L) { e[,j_b] <- .lm.fit(cbind(1, x[,n_j_b]), x[,j_b])$residuals }
         else { e[,j_b] <- x[,j_b] }
 
         b_ij[b_ij_indx] <- 2
@@ -149,32 +133,69 @@ FastStepGraph <- function(x,
       f_ij <- cor(e)
       f_ij <- abs(f_ij[lower_tri])
       f_ij[is.na(f_ij)] <- 0 # I have to check this condition
-      H <- which(Edges_A[,1]>0)
+      H <- which(Edges_A[,1] > 0L)
       f_ij[H] <- 0
 
-
       ############# steps of main loop (while) ###########################
-      k <- k+1
+      k <- k+1L
       # if (k > max.iterations){ message('Maximum number iteration reached') }
     }
   }
 
   ################## Release some memory #####################################
-  rm(f_ij, b_ij, Edges_I, N_neighbors)
+  rm(k, f_ij, b_ij, Edges_I, N_neighbors, x)
 
   ################## Compute the precision matrix ############################
-  col_var <- colvars(e)
+  M <- .compute_omega_and_beta(p, e, Edges_A)
+  return(list(vareps=e, beta=M$beta, Edges=Edges_A, Omega=M$Omega))
+}
+
+.colvars <- function(x) {
+  means <- colMeans(x)
+  n <- length(x)/length(means)
+  centeredX <- x - rep(means, each = n)
+  colSums(centeredX^2) / (n-1)
+}
+
+.neighbors_of <- function(node, Edges) {
+  pos_2 <- which(Edges[,2]==node)
+  pos_1 <- which(Edges[,1]==node)
+  c(Edges[pos_2, 1], Edges[pos_1, 2])
+}
+
+.residuals_update <- function(l, L, Edges_A, x) {
+  i <- Edges_A[l, 1]
+  j <- Edges_A[l, 2]
+  
+  n_i <- .neighbors_of(i, Edges_A)
+  n_i <- n_i[-which(n_i==j)]
+  
+  if ( length(n_i) > 0 ){ r_i <- .lm.fit(cbind(1, x[,n_i]), x[,i])$residuals}
+  else { r_i <- x[,i] }
+  
+  n_j <- .neighbors_of(j, Edges_A)
+  n_j <- n_j[-which(n_j==i)]
+  
+  if( length(n_j) > 0 ){ r_j <- .lm.fit(cbind(1, x[,n_j]), x[,j])$residuals }
+  else{r_j <- x[,j]}
+  
+  corr_b <- cor(r_i, r_j)
+  ifelse(is.na(corr_b), 0, abs(corr_b)) # I have to check this condition
+}
+
+.compute_omega_and_beta <- function(p, e, Edges) {
+  col_var <- .colvars(e)
   cor_matrix <- cov(e)
   cor_matrix[is.na(cor_matrix)] <- 0 # I have to check this condition
   Omega <- matrix(0,p,p)
   diag(Omega) <- col_var^(-1)
   Omega[is.infinite(Omega)] <- 1/.Machine$double.eps # I have to check this condition
   beta <- matrix(0,p,p)
-
-  for (edge in which(Edges_A[,2] > 0)){
-    i <- Edges_A[edge, 1]
-    j <- Edges_A[edge, 2]
-
+  
+  for (edge in which(Edges[,2] > 0L)){
+    i <- Edges[edge, 1]
+    j <- Edges[edge, 2]
+    
     Omega[i,j] <- cor_matrix[i,j]*Omega[i,i]*Omega[j,j]
     Omega[j,i] <- Omega[i,j]
     
@@ -184,12 +205,6 @@ FastStepGraph <- function(x,
     if(col_var[i] <= .Machine$double.eps) {beta[j,i] <- 0} # I have to check this condition
     else {beta[j,i] <- -cor_matrix[i,j]/col_var[i]}
   }
-  return(list(vareps=e, beta=beta, Edges=Edges_A, Omega=Omega))
-}
-
-colvars <- function(x) {
-  means <- colMeans(x)
-  n <- length(x)/length(means)
-  centeredX <- x - rep(means, each = n)
-  colSums(centeredX^2) / (n-1)
+  # Omega[abs(Omega) < 1e-5] = 0 # CHEQUEAR ESTA CONDIÇÃO
+  return(list(beta=beta, Omega=Omega))
 }
