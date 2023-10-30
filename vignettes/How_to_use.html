@@ -383,7 +383,7 @@ res &lt;- FastStepGraph::cv.FastStepGraph(X,
                                        alpha_f_max=0.8,
                                        data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 0.4842963 secs
+#&gt; Time difference of 0.5116765 secs
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)</code></pre>
 <p>If your input variables are non-standardized (with zero mean and unit
@@ -395,7 +395,7 @@ cross-validation to fit the final model:</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # INITIAL TIME
 G &lt;- FastStepGraph::FastStepGraph(X, alpha_f = res$alpha_f_opt, alpha_b = res$alpha_b_opt)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 0.003056526 secs
+#&gt; Time difference of 0.003077507 secs
 # print(G$Omega)</code></pre>
 <p>You can also perform these two steps, the cross-validation to obtain
 the ideal parameters and return the fitted model, in a single line by
@@ -407,7 +407,7 @@ res &lt;- FastStepGraph::cv.FastStepGraph(X,
                                        return_model=TRUE, 
                                        data_shuffle = TRUE)
 difftime(Sys.time(), t0, units = &quot;secs&quot;)
-#&gt; Time difference of 0.5076551 secs
+#&gt; Time difference of 0.5283525 secs
 # print(res$alpha_f_opt)
 # print(res$alpha_b_opt)
 # print(res$Omega)</code></pre>

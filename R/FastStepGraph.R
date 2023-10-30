@@ -91,15 +91,15 @@ FastStepGraph <- function(x,
       e[,i_f] <- .lm.fit(cbind(1, x[,n_i_f]), x[,i_f])$residuals
       e[,j_f] <- .lm.fit(cbind(1, x[,n_j_f]), x[,j_f])$residuals
 
-      ############### Residuals update ###################################
+      ############### Backward-Step: Residuals update ##########################
       # Compute Prediction Errors r_i and r_j for (i,j) in the active set Edges_A
       # L <- unique(c(n_i_f_pos_2, n_i_f_pos_1, n_j_f_pos_1, n_j_f_pos_2)) # check if unique is necessary
       L <- c(n_i_f_pos_2, n_i_f_pos_1, n_j_f_pos_1, n_j_f_pos_2)
       L <- L[-which(L == f_ij_indx)]
       
-      for (l in L) { b_ij[l] <- .residuals_update(l, L, Edges_A, x) }
+      for (l in L) { b_ij[l] <- .residuals_update(l, Edges_A, x) }
       
-      ############### Backward-Step ######################################
+      ############### Backward-Step: possible remove ###########################
       # Select (i,j) that min(|b_ij|) <= alpha_b
       b_ij[f_ij_indx] <- f_ij_max # don't change this line, otherwise it'll cause an infinite loop
       b_ij_indx <- which.min(b_ij)
@@ -163,9 +163,11 @@ FastStepGraph <- function(x,
   c(Edges[pos_2, 1], Edges[pos_1, 2])
 }
 
-.residuals_update <- function(l, L, Edges_A, x) {
+.residuals_update <- function(l, Edges_A, x) {
   i <- Edges_A[l, 1]
   j <- Edges_A[l, 2]
+  
+  Edges_A[1, 2] <- 0
   
   n_i <- .neighbors_of(i, Edges_A)
   n_i <- n_i[-which(n_i==j)]
