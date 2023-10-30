@@ -58,8 +58,9 @@ difftime(Sys.time(), t0, units = "secs")
 If your input variables are non-standardized (with zero mean and unit variance), we recommend that you set `data_scale=TURE`. Subsequently, calculate the Omega matrix by calling the `FastStepGraph()` function passing the optimal parameters $\mathbf{\alpha_f}$ and $\mathbf{\alpha_b}$ found by cross-validation to fit the final model:
 
 ```{r}
+tracemem(X)
 t0 <- Sys.time() # INITIAL TIME
-G <- FastStepGraph::FastStepGraph(X, alpha_f = res$alpha_f_opt, alpha_b = res$alpha_b_opt)
+G <- FastStepGraph::FastStepGraph(X, alpha_f = res$alpha_f_opt, alpha_b = res$alpha_b_opt, data_scale = TRUE)
 difftime(Sys.time(), t0, units = "secs")
 # print(G$Omega)
 ```
